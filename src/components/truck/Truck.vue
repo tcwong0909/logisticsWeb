@@ -1,10 +1,11 @@
 <template>
     <div>
       <div style="margin-top: 20px" >
-        <el-button type="primary" icon="el-icon-plus" size="small" @click="dialogFormVisible = true">添加车辆</el-button>
+        <el-button type="primary" icon="el-icon-plus" size="small" @click="showDialog('add')">添加车辆</el-button>
+        <el-button type="danger" icon="el-icon-minus" size="small" @click="multiDelete" :disabled="multipleSelection.length===0">批量删除</el-button>
       </div>
       <div>
-        <el-dialog title="添加车辆" :visible.sync="dialogFormVisible">
+        <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible">
           <el-form :model="truck">
               <tr>
                   <el-tag>车牌号码</el-tag>
@@ -47,27 +48,35 @@
         <el-table
           :data="trucks"
           border
-          style="width: 100%">
+          style="width: 100%"
+          @selection-change="handleSelectionChange">
+          <el-table-column
+            type="selection"
+            width="35">
+          </el-table-column>
           <el-table-column
             prop="truckid"
             label="编号"
-            width="80">
+            width="50">
           </el-table-column>
           <el-table-column
             prop="number"
             label="车牌号码"
-            width="100">
+            width="110">
           </el-table-column>
           <el-table-column
             prop="buydate"
+            width="100"
             label="购车日期">
           </el-table-column>
           <el-table-column
             prop="type"
+            width="80"
             label="车辆类型">
           </el-table-column>
           <el-table-column
             prop="length"
+            width="100"
             label="创队时间">
           </el-table-column>
           <el-table-column
@@ -78,10 +87,10 @@
           <el-table-column
             prop="fkTeamid"
             label="所属车队编号"
-            width="150">
+            width="110">
           </el-table-column>
           <el-table-column
-            width="100"
+            width="80"
             label="工作状态">
             <template slot-scope="scope">
               <el-tag v-if="scope.row.state===1" type="success">承运中</el-tag>
@@ -96,15 +105,25 @@
           </el-table-column>
           <el-table-column
             prop="checkintime"
+            width="100"
             label="加入时间">
           </el-table-column>
           <el-table-column
             prop="isdelete"
+            width="110"
             label="数据记录状态">
           </el-table-column>
           <el-table-column
             prop="altertime"
+            width="100"
             label="修改时间">
+          </el-table-column>
+          <el-table-column
+          label="操作">
+            <template slot-scope="scope">
+              <el-button type="primary" size="mini" @click="showDialog(scope.row)">编辑</el-button>
+              <el-button type="danger" size="mini" @click="deleteById(scope.row.truckid)">删除</el-button>
+            </template>
           </el-table-column>
         </el-table>
       </div>
@@ -128,10 +147,13 @@
         name: "Truck",
         data(){
           return{
+            multipleSelection: [],
+            ids:"",
             total:null,
             pageSize:10,
             currentPage:1,
             dialogFormVisible:false,
+            dialogTitle:'',
             truck:{
               number:'',
               buydate:'',
@@ -144,25 +166,41 @@
           }
         },
         mounted(){
-          this.initTrucks();
+          this.loadTrucks();
         },
         methods:{
+          initTruck(){
+            this.truck={
+              number:'',
+              buydate:'',
+              type: '中型货车',
+              tonnage:null,
+              state:2,
+              remark:''
+            }
+          },
+
           addTruck(){
+
+            if (this.truck.truckid) {
+              this.putRequest('/truck/put',this.truck).then(res=>{
+                if (res){
+                  this.dialogFormVisible = false;
+                  this.initTruck();
+                  this.loadTrucks();
+                }
+              });
+              return;
+            }
             this.postRequest("/truck/add",this.truck).then(res=>{
               if (res){
                 this.dialogFormVisible = false;
-                this.truck={
-                  number:'',
-                    buydate:'',
-                    type: '中型货车',
-                    tonnage:0,
-                    state:0,
-                    remark:''
-                }
+                this.initTruck();
+                this.loadTrucks();
               }
             })
           },
-          initTrucks(){
+          loadTrucks(){
             this.getRequest("/truck/getAllByPage?page="+this.currentPage+"&size="+this.pageSize).then(res=>{
               if (res){
                 this.trucks=res.data.data;
@@ -172,11 +210,47 @@
           },
           handleSizeChange(size){
               this.pageSize = size;
-              this.initTrucks();
+              this.loadTrucks();
           },
           handleCurrentChange(page){
             this.currentPage = page;
-            this.initTrucks();
+            this.loadTrucks();
+          },
+          handleSelectionChange(val) {
+            this.multipleSelection=val;
+
+          },
+          deleteById(id){
+            let ids = id;
+            this.deleteByIds(ids);
+            this.loadTrucks();
+          },
+          multiDelete(){
+            let ids = '';
+            this.multipleSelection.forEach(data=>{
+               ids  += data.truckid+',';
+            });
+            this.deleteByIds(ids);
+            this.loadTrucks();
+          },
+
+          deleteByIds(data){
+            this.deleteRequest("/truck/delete/"+data).then(res=>{
+              if (res){
+                this.loadTrucks();
+              }
+              }
+            )
+          },
+          showDialog(data){
+            this.dialogFormVisible=true;
+            if(data === 'add'){
+            this.dialogTitle = '添加车辆';
+              return;
+            }
+              this.dialogTitle='编辑';
+              this.truck = data;
+
           }
         }
     }
