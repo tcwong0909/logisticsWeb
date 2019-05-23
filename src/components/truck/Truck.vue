@@ -36,6 +36,19 @@
                 <el-tag style="width: 5vw">备注</el-tag>
                 <el-input v-model="truck.remark" style="width: 10vw"></el-input>
               </tr>
+              <tr>
+                <el-tag>所属车队</el-tag>
+                <template >
+                  <el-select v-model="truck.fkTeamid" placeholder="请选择">
+                    <el-option
+                      v-for="truckTeam in truckTeams"
+                      :key="truckTeam.teamid"
+                      :label="truckTeam.teamname"
+                      :value="truckTeam.teamid">
+                    </el-option>
+                  </el-select>
+                </template>
+              </tr>
 
           </el-form>
           <div slot="footer" class="dialog-footer">
@@ -75,7 +88,7 @@
             label="车辆类型">
           </el-table-column>
           <el-table-column
-            prop="length"
+            prop="truckteam.checkintime"
             width="100"
             label="创队时间">
           </el-table-column>
@@ -85,8 +98,8 @@
             width="50">
           </el-table-column>
           <el-table-column
-            prop="fkTeamid"
-            label="所属车队编号"
+            prop="truckteam.teamname"
+            label="所属车队名称"
             width="110">
           </el-table-column>
           <el-table-column
@@ -147,6 +160,7 @@
         name: "Truck",
         data(){
           return{
+            truckTeams:[],
             multipleSelection: [],
             ids:"",
             total:null,
@@ -160,7 +174,8 @@
               type: '中型货车',
               tonnage:null,
               state:2,
-              remark:''
+              remark:'',
+              fkTeamid:null
             },
             trucks:[]
           }
@@ -176,7 +191,8 @@
               type: '中型货车',
               tonnage:null,
               state:2,
-              remark:''
+              remark:'',
+              fkTeamid:null
             }
           },
 
@@ -243,6 +259,7 @@
             )
           },
           showDialog(data){
+            this.loadtruckTeams();
             this.dialogFormVisible=true;
             if(data === 'add'){
             this.dialogTitle = '添加车辆';
@@ -251,7 +268,14 @@
               this.dialogTitle='编辑';
               this.truck = data;
 
-          }
+          },
+          loadtruckTeams(){
+            this.getRequest("/truckTeam/getAllByPage").then(res=>{
+              if (res){
+                this.truckTeams=res.data.data;
+              }
+            })
+          },
         }
     }
 </script>

@@ -66,12 +66,12 @@
                 cancelButtonText: '取消',
                 type: 'warning'
               }).then(() => {
-                this.postRequest("/logout").then(res=>{
-                  if (res.data) {
-                    window.sessionStorage.removeItem("user");
-                    this.$router.replace("/");
-                  }
-                })
+                window.sessionStorage.removeItem("user");
+                this.$router.replace("/");
+                // this.postRequest("/logout").then(res=>{
+                //   if (res.data) {
+                //   }
+                // })
               }).catch(() => {
                 this.$message({
                   type: 'info',
