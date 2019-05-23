@@ -72,32 +72,36 @@
         <el-table-column
           prop="name"
           label="姓名"
-          width="110">
+          width="80">
         </el-table-column>
         <el-table-column
-          prop="sex"
-          width="100"
+          width="50"
           label="性别">
+          <template slot-scope="scope">
+            <span v-if="scope.row.sex ===1">男</span>
+            <span v-else-if="scope.row.sex ===2">女</span>
+            <span v-else>未知</span>
+          </template>
         </el-table-column>
         <el-table-column
           prop="birth"
-          width="80"
+          width="100"
           label="出生日期">
         </el-table-column>
         <el-table-column
           prop="phone"
-          width="100"
+          width="120"
           label="电话">
         </el-table-column>
         <el-table-column
           prop="idcard"
           label="身份证号码"
-          width="50">
+          width="130">
         </el-table-column>
         <el-table-column
           prop="truckteam.teamname"
           label="所属车队名称"
-          width="110">
+          width="70">
         </el-table-column>
         <el-table-column
           width="80"
@@ -119,9 +123,13 @@
           label="加入时间">
         </el-table-column>
         <el-table-column
-          prop="isdelete"
-          width="110"
-          label="数据记录状态">
+          label="数据记录状态"
+          width="110">
+          <template slot-scope="scope">
+            <el-tag v-if="scope.row.isdelete ===1" type="success" > 使用中</el-tag>
+            <el-tag v-else-if="scope.row.isdelete ===2" type="danger"> 该记录已删除</el-tag>
+            <el-tag v-else>未知</el-tag>
+          </template>
         </el-table-column>
         <el-table-column
           prop="altertime"
@@ -269,7 +277,7 @@
 
       },
       loadTruckTeams(){
-        this.getRequest("/driverTeam/getAllByPage").then(res=>{
+        this.getRequest("/truckTeam/getAllByPage").then(res=>{
           if (res){
             this.truckTeams=res.data.data;
           }

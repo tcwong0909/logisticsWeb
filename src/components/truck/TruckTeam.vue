@@ -68,7 +68,7 @@
         </el-table-column>
         <el-table-column
           label="数据记录状态"
-          width="150">
+          width="110">
           <template slot-scope="scope">
             <el-tag v-if="scope.row.isdelete ===1" type="success" > 使用中</el-tag>
             <el-tag v-else-if="scope.row.isdelete ===2" type="danger"> 该记录已删除</el-tag>
