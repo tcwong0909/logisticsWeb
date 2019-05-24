@@ -5,7 +5,7 @@
           <el-form>
             <tr>
               <td>
-               <el-input placeholder="请输入内容" v-model="searchTruck.number">
+               <el-input placeholder="请输入内容" suffix-icon="el-icon-search" v-model="searchTruck.number">
                   <template slot="prepend">车牌号码</template>
                 </el-input>
               </td>
@@ -251,8 +251,6 @@
           immediate:true,
           deep:true
         }
-
-
       },
         mounted(){
           this.loadTrucks();

@@ -1,6 +1,31 @@
 <template>
   <div>
-    <div style="margin-top: 20px" >
+    <div>
+      <el-card  body-style="padding:10px" shadow="never" style="display: flex;align-items: center">
+        <el-form>
+          <tr>
+            <td>
+              <el-input placeholder="请输入内容" suffix-icon="el-icon-search" v-model="searchTeam.teamname">
+                <template slot="prepend">车队名称</template>
+              </el-input>
+            </td>
+            <td>
+              <el-input placeholder="请输入内容" suffix-icon="el-icon-search" v-model="searchTeam.leader">
+                <template slot="prepend">车队负责人</template>
+              </el-input>
+            </td>
+            <td style="padding-left: 10px">
+              <el-button type="danger" icon="el-icon-full-screen" @click="resetSearch">重置</el-button>
+            </td>
+            <td style="padding-left: 10px">
+              <el-button type="primary" icon="el-icon-search" @click="doSearch">搜索</el-button>
+            </td>
+          </tr>
+        </el-form>
+      </el-card>
+    </div>
+    <el-card shadow="never" body-style="padding:0;padding-top:1px">
+    <div >
       <el-button type="primary" icon="el-icon-plus" size="small" @click="showDialog('add')">添加车辆</el-button>
       <el-button type="danger" icon="el-icon-minus" size="small" @click="multiDelete" :disabled="multipleSelection.length===0">批量删除</el-button>
     </div>
@@ -101,6 +126,7 @@
         :total="total">
       </el-pagination>
     </div>
+    </el-card>
   </div>
 </template>
 
@@ -116,6 +142,10 @@
         currentPage:1,
         dialogFormVisible:false,
         dialogTitle:'',
+        searchTeam:{
+          teamname:'',
+          leader:''
+        },
         truckTeam:{
           teamname:'',
           leader:'',
@@ -125,10 +155,36 @@
         truckTeams:[]
       }
     },
+    watch:{
+      searchTeam:{
+        handler(){
+          this.doSearch();
+        },
+        deep:true,
+        immediate:true
+      }
+    },
     mounted(){
       this.loadtruckTeams();
     },
     methods:{
+      resetSearch(){
+        this.searchTeam={
+          teamname:'',
+          leader:''
+        }
+      },
+      doSearch(){
+        let page = 1;
+        let size = 10;
+        this.postRequest("/truckTeam/getAllByPage?page="+page+"&size="+size+
+          "&teamname="+this.searchTeam.teamname+"&leader="+this.searchTeam.leader).then(res=>{
+          if (res){
+            this.truckTeams=res.data.data;
+            this.total = res.data.total;
+          }
+        })
+      },
       inittruckTeam(){
         this.truckTeam={
           teamname:'',
@@ -160,7 +216,8 @@
         })
       },
       loadtruckTeams(){
-        this.getRequest("/truckTeam/getAllByPage?page="+this.currentPage+"&size="+this.pageSize).then(res=>{
+        this.postRequest("/truckTeam/getAllByPage?page="+this.currentPage+"&size="+this.pageSize+
+          "&teamname="+this.searchTeam.teamname+"&leader="+this.searchTeam.leader).then(res=>{
           if (res){
             this.truckTeams=res.data.data;
             this.total = res.data.total;
