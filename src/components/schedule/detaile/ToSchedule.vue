@@ -155,10 +155,97 @@
           <el-table-column
             label="操作">
             <template slot-scope="scope">
-              <el-button type="danger" size="mini" @click="reveiveById(scope.row.carriersid)">接收</el-button>
+              <el-button type="danger" size="mini" @click="dispatchById(scope.row.carriersid)">调度</el-button>
             </template>
           </el-table-column>
         </el-table>
+      </div>
+      <div>
+        <el-dialog title="承运调度" :visible.sync="outerVisible">
+          <div>
+            <el-tag>出发时间</el-tag>
+            <el-date-picker
+              v-model="schedule.starttime"
+              type="datetime"
+              placeholder="出发时间">
+            </el-date-picker>
+          </div>
+          <div>
+            <el-tag>车辆编号</el-tag>
+            <el-input v-model="schedule.fkTruckid" style="width: 14vw" placeholder="车辆编号" @focus="selectTruck"></el-input>
+          </div>
+          <div>
+            <el-tag>备注</el-tag>
+            <el-input v-model="schedule.remark" style="width: 14vw" placeholder="备注"></el-input>
+          </div>
+          <el-dialog
+            width="54%"
+            title="空闲可调度车辆"
+            :visible.sync="innerVisible"
+            append-to-body>
+            <el-table
+              ref="singleTable"
+              border
+              :data="trucks"
+              highlight-current-row
+              @current-change="handleDialogCurrentChange"
+              style="width: 100%">
+              <el-table-column
+                prop="truckid"
+                label="编号"
+                width="50">
+              </el-table-column>
+              <el-table-column
+                prop="number"
+                label="车牌号码"
+                width="110">
+              </el-table-column>
+              <el-table-column
+                prop="buydate"
+                width="100"
+                label="购车日期">
+              </el-table-column>
+              <el-table-column
+                prop="type"
+                width="80"
+                label="车辆类型">
+              </el-table-column>
+              <el-table-column
+                prop="tonnage"
+                label="吨位"
+                width="50">
+              </el-table-column>
+              <el-table-column
+                prop="truckteam.teamname"
+                label="所属车队名称"
+                width="110">
+              </el-table-column>
+              <el-table-column
+                width="80"
+                label="工作状态">
+                <template slot-scope="scope">
+                  <el-tag v-if="scope.row.state===1" type="success">承运中</el-tag>
+                  <el-tag v-else-if="scope.row.state===2" >空闲</el-tag>
+                  <el-tag v-else type="warning">未知</el-tag>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="remark"
+                width="100"
+                label="备注">
+              </el-table-column>
+              <el-table-column
+                prop="checkintime"
+                width="100"
+                label="加入时间">
+              </el-table-column>
+            </el-table>
+          </el-dialog>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="outerVisible = false">取 消</el-button>
+            <el-button type="primary" @click="addSchedule">确 定</el-button>
+          </div>
+        </el-dialog>
       </div>
       <div style="display: flex;justify-content: flex-end;padding: 15px">
         <el-pagination
@@ -178,9 +265,11 @@
 
 <script>
   export default {
-    name: "Carriers",
+    name: "ToSchedule",
     data() {
       return {
+        outerVisible:false,
+        innerVisible:false,
         finishedstates: [
           {"id": 0, "name": "待调度"},
           {"id": 1, "name": "已调度"},
@@ -196,6 +285,13 @@
           finishedstate: ''
         },
         Carrierss: [],
+        schedule:{
+          starttime:null,
+          fkTruckid:null,
+          fkCarriersid:null,
+          remark:''
+        },
+        trucks:[]
       }
     },
     watch: {
@@ -211,6 +307,19 @@
       this.loadCarrierss();
     },
     methods: {
+      handleDialogCurrentChange(val){
+        this.schedule.fkTruckid= val.truckid;
+        console.log(this.schedule.fkTruckid);
+        this.innerVisible = false;
+      },
+      selectTruck(){
+        this.innerVisible=true;
+          this.getRequest("/truck/getTrucks").then(res=>{
+            if (res){
+              this.trucks=res.data;
+            }
+          })
+      },
       resetSearch() {
         this.searchCarrierss = {
           sendcompany: '',
@@ -246,14 +355,18 @@
         this.currentPage = page;
         this.loadCarrierss();
       },
-      reveiveById(id) {
-        this.putRequest("/carriers/receive/" + id).then(res => {
-            if (res) {
-              this.loadCarrierss();
-            }
-          }
-        )
+      dispatchById(id) {
+        this.outerVisible=true;
+        this.schedule.fkCarriersid=id;
       },
+      addSchedule(){
+           this.putRequest("/schedule/dispatch",this.schedule).then(res=>{
+             if (res) {
+               this.outerVisible=false;
+               this.loadCarrierss();
+             }
+       })
+      }
     }
   }
 </script>

@@ -28,7 +28,7 @@
                 <template >
                   <el-select
                     v-model="searchTruck.fkTeamid"
-                    @visible-change="selectChanges"
+                    @visible-change="selectSearchChanges"
                     placeholder="请选择">
                     <el-option label="全部" :value="''"></el-option>
                     <el-option
@@ -263,7 +263,7 @@
               fkTeamid:''
             }
           },
-          selectChanges(){
+          selectSearchChanges(){
             this.loadtruckTeams();
           },
           initTruck(){
@@ -366,7 +366,7 @@
 
           },
           loadtruckTeams(){
-            this.getRequest("/truckTeam/getAllByPage").then(res=>{
+            this.postRequest("/truckTeam/getAllByPage").then(res=>{
               if (res){
                 this.truckTeams=res.data.data;
               }
