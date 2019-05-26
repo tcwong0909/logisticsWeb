@@ -37,7 +37,6 @@
     </div>
     <el-card shadow="never" body-style="padding:0;padding-top:1px">
       <div>
-        <el-button type="primary" icon="el-icon-plus" size="small" @click="showDialog(scope.row)">编辑</el-button>
         <el-button type="danger" icon="el-icon-minus" size="small" @click="multiDelete" :disabled="scheduleList.length===0">批量删除</el-button>
       </div>
       <div>
@@ -160,15 +159,13 @@
                 placement="top-start"
                 title="发货信息"
                 width="200"
-
                 trigger="hover">
                 <div>
-                  {{scope.row.sendaddress}}
-                  {{scope.row.sendlinkman}}
-                  {{scope.row.sendphone}}
+                  {{scope.row.carriers.sendaddress}}
+                  {{scope.row.carriers.sendlinkman}}
+                  {{scope.row.carriers.sendphone}}
                 </div>
-                <el-tag slot="reference"> {{scope.row.sendcompany}}</el-tag>
-
+                <el-tag slot="reference"> {{scope.row.carriers.sendcompany}}</el-tag>
               </el-popover>
             </template>
           </el-table-column>
@@ -182,11 +179,11 @@
                 width="200"
                 trigger="hover">
                 <div>
-                  {{scope.row.fkReceiveaddress}}
-                  {{scope.row.receivelinkman}}
-                  {{scope.row.receivephone}}
+                  {{scope.row.carriers.fkReceiveaddress}}
+                  {{scope.row.carriers.receivelinkman}}
+                  {{scope.row.carriers.receivephone}}
                 </div>
-                <el-tag slot="reference">{{scope.row.receivecompany}}</el-tag>
+                <el-tag slot="reference">{{scope.row.carriers.receivecompany}}</el-tag>
               </el-popover>
             </template>
           </el-table-column>
@@ -280,7 +277,6 @@
       }
     },
     mounted(){
-      console.log('66666666')
       this.loadSchedules();
 
     },
@@ -313,6 +309,7 @@
           "&schedulingid="+this.searchSchedule.schedulingid+"&fkCarriersid="+
           this.searchSchedule.fkCarriersid+"&sendcompany="+this.searchSchedule.carriers.sendcompany+"&receivecompany="+this.searchSchedule.carriers.receivecompany).then(res=>{
           if (res){
+            console.log(res.data.data);
             this.schedules=res.data.data;
             this.total = res.data.total;
           }

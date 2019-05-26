@@ -9,16 +9,16 @@
       </el-steps>
     </div>
     <div v-show="active ===0">
-      <ToSchedule></ToSchedule>
+      <ToSchedule ref="toSchedule"/>
     </div>
     <div v-show="active ===1">
-      <HaveSchedule></HaveSchedule>
+      <HaveSchedule ref="haveSchedule"/>
     </div>
     <div v-show="active ===2">
-      <HaveReceive></HaveReceive>
+      <HaveReceive/>
     </div>
     <div v-show="active ===3">
-      <HaveClose></HaveClose>
+      <HaveClose/>
     </div>
   </div>
 </template>
@@ -38,10 +38,12 @@
     methods: {
       toSchedule() {
         this.active = 0;
+        this.$refs.toSchedule.loadCarrierss();
         console.log(this.active);
       },
       haveSchedule() {
         this.active = 1;
+        this.$refs.haveSchedule.loadSchedules();
         console.log(this.active);
       },
       haveReceive() {
