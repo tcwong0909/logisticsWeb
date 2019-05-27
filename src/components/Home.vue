@@ -95,7 +95,7 @@
     display: flex;
     align-items: center;
     justify-content:space-between;
-    background-color: #ddc9ff;
+    background-color: #409EFF;
   }
   .header-title{
     font-family: 华文行楷;
