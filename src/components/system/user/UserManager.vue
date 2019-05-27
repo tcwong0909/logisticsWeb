@@ -81,7 +81,34 @@
           </el-form>
           <div slot="footer" class="dialog-footer">
             <el-button @click="dialogFormVisible = false">取 消</el-button>
-            <el-button type="primary" @click="adduser">确 定</el-button>
+            <el-button type="primary" @click="addUser">确 定</el-button>
+          </div>
+        </el-dialog>
+      </div>
+      <div>
+        <el-dialog :title="bindDialog" :visible.sync="bindDialog">
+          <el-form :model="user">
+            <tr>
+              <el-tag style="margin-left: 28px;width: 5vw">用户账号</el-tag>
+              <el-input  disabled="true" v-model="user.account" style="width: 10vw" placeholder="吨"></el-input>
+            </tr>
+            <tr>
+              <el-tag>要绑定角色</el-tag>
+              <template >
+                <el-select v-model="user.fkRoleid" placeholder="请选择">
+                  <el-option
+                    v-for="role in roles"
+                    :key="role.roleid"
+                    :label="role.rolename"
+                    :value="role.roleid">
+                  </el-option>
+                </el-select>
+              </template>
+            </tr>
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="bindDialog = false">取 消</el-button>
+            <el-button type="primary" @click="toBind">确 定</el-button>
           </div>
         </el-dialog>
       </div>
@@ -148,6 +175,7 @@
             label="操作">
             <template slot-scope="scope">
               <el-button type="primary" size="mini" @click="showDialog(scope.row)">编辑</el-button>
+              <el-button type="primary" size="mini" @click="bindRole(scope.row)">绑定角色</el-button>
               <el-button type="danger" size="mini" @click="deleteById(scope.row.userid)">删除</el-button>
             </template>
           </el-table-column>
@@ -180,20 +208,23 @@
         total:null,
         pageSize:10,
         currentPage:1,
+        bindDialog:false,
         dialogFormVisible:false,
         dialogTitle:'',
         searchUser:{
           username:'',
           account:'',
-          fkRoleid:null,
-          sex:null
+          fkRoleid:'',
+          sex:''
         },
         user:{
+          userid:'',
           username:'',
-          sex:null,
+          sex:'',
           account: '',
           phone:'',
           email:'',
+          fkRoleid:''
         },
         users:[],
         roles:[]
@@ -212,12 +243,25 @@
       this.loadUsers();
     },
     methods:{
+      toBind(){
+        this.addUser();
+        this.bindDialog=false;
+      },
+      bindRole(data){
+        this.bindDialog=true;
+        this.user = data;
+        this.getRequest("/role/getAll").then(res=>{
+          if (res){
+            this.roles=res.data;
+          }
+        })
+      },
       resetSearch(){
         this.searchUser={
           username:'',
           account:'',
-          fkRoleid:null,
-          sex:null
+          fkRoleid:'',
+          sex:''
         }
       },
       initUser(){
@@ -254,7 +298,7 @@
 
       },
       loadUsers(){
-        this.getRequest("/user/getAllByPage?page="+this.currentPage+"&size="+this.pageSize+
+        this.postRequest("/user/getAllByPage?page="+this.currentPage+"&size="+this.pageSize+
           "&account="+this.searchUser.account+"&username="+this.searchUser.username+"&sex="+this.searchUser.sex+"&fkRoleid="+this.searchUser.fkRoleid).then(res=>{
           if (res){
             this.users=res.data.data;
@@ -265,7 +309,7 @@
       doSearch(){
         let page = 1;
         let size = 10;
-        this.getRequest("/user/getAllByPage?page="+page+"&size="+size+
+        this.postRequest("/user/getAllByPage?page="+page+"&size="+size+
           "&account="+this.searchUser.account+"&username="+this.searchUser.username+"&sex="+this.searchUser.sex+"&fkRoleid="+this.searchUser.fkRoleid).then(res=>{
           if (res){
             this.users=res.data.data;

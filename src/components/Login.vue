@@ -33,7 +33,7 @@ export default {
         remember:'false',
         user:{
           account:'admin',
-          password:'admin'
+          password:'123456'
         }
     }
   },
