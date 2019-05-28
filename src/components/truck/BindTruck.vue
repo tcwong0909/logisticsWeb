@@ -1,39 +1,36 @@
 <template>
   <div>
-
     <div>
       <el-card  body-style="padding:10px" shadow="never" style="display: flex;align-items: center">
         <el-form>
           <tr>
             <td>
-              <el-input placeholder="请输入内容" suffix-icon="el-icon-search" v-model="searchDriver.name">
-                <template slot="prepend">司机姓名</template>
+              <el-input placeholder="请输入内容" suffix-icon="el-icon-search" v-model="searchContact.fkDriverid">
+                <template slot="prepend">驾驶员编号</template>
+              </el-input>
+            </td>
+            <td>
+              <el-input placeholder="请输入内容" suffix-icon="el-icon-search" v-model="searchContact.drivername">
+                <template slot="prepend">驾驶员姓名</template>
+              </el-input>
+            </td>
+            <td>
+              <el-input placeholder="请输入内容" suffix-icon="el-icon-search" v-model="searchContact.fkTruckid">
+                <template slot="prepend">车辆编号</template>
+              </el-input>
+            </td>
+            <td>
+              <el-input placeholder="请输入内容" suffix-icon="el-icon-search" v-model="searchContact.teamname">
+                <template slot="prepend">车队名称</template>
               </el-input>
             </td>
             <td style="padding-left: 10px">
-              <el-tag>所属车队</el-tag>
-              <template >
-                <el-select
-                  v-model="searchDriver.fkTeamid"
-                  @visible-change="selectChanges"
-                  placeholder="请选择">
-                  <el-option label="全部" :value="''"></el-option>
-                  <el-option
-                    v-for="truckTeam in truckTeams"
-                    :key="truckTeam.teamid"
-                    :label="truckTeam.teamname"
-                    :value="truckTeam.teamid">
-                  </el-option>
-                </el-select>
-              </template>
-            </td>
-            <td style="padding-left: 10px">
-              <el-tag>工作状态</el-tag>
+              <el-tag>绑定状态</el-tag>
               <template>
-                <el-select v-model="searchDriver.state" placeholder="请选择">
+                <el-select v-model="searchContact.bindId" placeholder="请选择">
                   <el-option label="全部" :value="''"></el-option>
-                  <el-option label="承运中" :value="1"></el-option>
-                  <el-option label="空闲" :value="2"></el-option>
+                  <el-option label="未绑定" :value="1"></el-option>
+                  <el-option label="已绑定" :value="2"></el-option>
                 </el-select>
               </template>
             </td>
@@ -49,62 +46,65 @@
     </div>
     <el-card shadow="never" body-style="padding:0;padding-top:1px">
       <div >
-        <el-button type="primary" icon="el-icon-plus" size="small" @click="showDialog('add')">添加驾驶员</el-button>
-        <el-button type="danger" icon="el-icon-minus" size="small" @click="multiDelete" :disabled="multipleSelection.length===0">批量删除</el-button>
+        <el-button type="danger" icon="el-icon-minus" size="small" @click="multiUnbind" :disabled="multipleSelection.length===0">批量解除</el-button>
       </div>
       <div>
         <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible">
-          <el-form :model="driver">
-            <tr>
-              <el-tag>驾驶员姓名</el-tag>
-              <el-input v-model="driver.name" style="width: 10vw"></el-input>
-              <el-tag>性别</el-tag>
-              <el-radio v-model="driver.sex" :label= 1>男</el-radio>
-              <el-radio v-model="driver.sex" :label= 2>女</el-radio>
-            </tr>
-            <tr>
-              <el-tag style="margin-left: 28px">出生日期</el-tag>
-              <el-date-picker
-                v-model="driver.birth"
-                type="date"
-                placeholder="选择日期">
-              </el-date-picker>
-
-              <el-tag style="margin-left: 28px;width: 5vw">联系电话</el-tag>
-              <el-input v-model="driver.phone" style="width: 10vw" ></el-input>
-            </tr>
-            <tr>
-              <el-tag style="margin-left: 28px;width: 5vw">身份证号码</el-tag>
-              <el-input v-model="driver.idcard" style="width: 10vw" ></el-input>
-              <el-tag>所属车队</el-tag>
-              <template >
-                <el-select v-model="driver.fkTeamid" placeholder="请选择">
-                  <el-option
-                    v-for="truckTeam in truckTeams"
-                    :key="truckTeam.teamid"
-                    :label="truckTeam.teamname"
-                    :value="truckTeam.teamid">
-                  </el-option>
-                </el-select>
+          <el-table
+            ref="singleTable"
+            :data="trucks"
+            highlight-current-row
+            @current-change="handleTruckChange"
+            style="width: 100%">
+            <el-table-column
+              prop="truckid"
+              label="编号"
+              width="50">
+            </el-table-column>
+            <el-table-column
+              prop="number"
+              label="车牌号码"
+              width="110">
+            </el-table-column>
+            <el-table-column
+              prop="type"
+              width="80"
+              label="车辆类型">
+            </el-table-column>
+            <el-table-column
+              prop="tonnage"
+              label="吨位"
+              width="50">
+            </el-table-column>
+            <el-table-column
+              prop="truckteam.teamname"
+              label="所属车队名称"
+              width="110">
+            </el-table-column>
+            <el-table-column
+              width="80"
+              label="工作状态">
+              <template slot-scope="scope">
+                <el-tag v-if="scope.row.state===1" type="success">承运中</el-tag>
+                <el-tag v-else-if="scope.row.state===2" >空闲</el-tag>
+                <el-tag v-else type="warning">未知</el-tag>
               </template>
-            </tr>
-            <tr>
-              <el-tag>工作状态</el-tag>
-              <el-radio v-model="driver.state" :label= 1>承运中</el-radio>
-              <el-radio v-model="driver.state" :label= 2>空闲</el-radio>
-              <el-tag style="width: 5vw">备注</el-tag>
-              <el-input v-model="driver.remark" style="width: 10vw"></el-input>
-            </tr>
-          </el-form>
+            </el-table-column>
+            <el-table-column
+              prop="remark"
+              width="100"
+              label="备注">
+            </el-table-column>
+          </el-table>
           <div slot="footer" class="dialog-footer">
             <el-button @click="dialogFormVisible = false">取 消</el-button>
-            <el-button type="primary" @click="adddriver">确 定</el-button>
+            <el-button type="primary" @click="bindTruck">确 定</el-button>
           </div>
         </el-dialog>
       </div>
       <div style="margin-top: 5px">
         <el-table
-          :data="drivers"
+          :data="contacts"
           border
           style="width: 100%"
           @selection-change="handleSelectionChange">
@@ -113,82 +113,40 @@
             width="35">
           </el-table-column>
           <el-table-column
-            prop="driverid"
-            label="编号"
-            width="50">
+            prop="driver.driverid"
+            label="驾驶员编号"
+            width="100">
           </el-table-column>
           <el-table-column
-            prop="name"
-            label="姓名"
-            width="80">
+            prop="driver.name"
+            label="驾驶员姓名"
+            width="100">
           </el-table-column>
           <el-table-column
-            width="50"
-            label="性别">
-            <template slot-scope="scope">
-              <span v-if="scope.row.sex ===1">男</span>
-              <span v-else-if="scope.row.sex ===2">女</span>
-              <span v-else>未知</span>
-            </template>
+            prop="truck.truckid"
+            label="车辆编号"
+            width="100">
           </el-table-column>
           <el-table-column
-            prop="birth"
+            prop="truck.number"
+            label="车牌号"
+            width="100">
+          </el-table-column>
+          <el-table-column
+            prop="truckteam.teamid"
             width="100"
-            label="出生日期">
-          </el-table-column>
-          <el-table-column
-            prop="phone"
-            width="120"
-            label="电话">
-          </el-table-column>
-          <el-table-column
-            prop="idcard"
-            label="身份证号码"
-            width="130">
+            label="车队编号">
           </el-table-column>
           <el-table-column
             prop="truckteam.teamname"
-            label="所属车队名称"
-            width="70">
-          </el-table-column>
-          <el-table-column
-            width="80"
-            label="工作状态">
-            <template slot-scope="scope">
-              <el-tag v-if="scope.row.state===1" type="success">承运中</el-tag>
-              <el-tag v-else-if="scope.row.state===2" >空闲</el-tag>
-              <el-tag v-else type="warning">未知</el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="remark"
             width="100"
-            label="备注">
-          </el-table-column>
-          <el-table-column
-            prop="checkintime"
-            width="100"
-            label="加入时间">
-          </el-table-column>
-          <el-table-column
-            label="数据记录状态"
-            width="110">
-            <template slot-scope="scope">
-              <el-tag v-if="scope.row.isdelete ===1" type="success" > 使用中</el-tag>
-              <el-tag v-else-if="scope.row.isdelete ===2" type="danger"> 该记录已删除</el-tag>
-              <el-tag v-else>未知</el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="altertime"
-            width="100"
-            label="修改时间">
+            label="车队名称">
           </el-table-column>
           <el-table-column
             label="操作">
             <template slot-scope="scope">
-              <el-button type="primary" size="mini" @click="showDialog(scope.row)">编辑</el-button>
-              <el-button type="danger" size="mini" @click="deleteById(scope.row.driverid)">删除</el-button>
+              <el-button type="primary" size="mini" @click="showDialog(scope.row)" :disabled="scope.row.fkTruckid !=null">绑定</el-button>
+              <el-button type="danger" size="mini" @click="unbindById(scope.row.contactid)" :disabled="scope.row.fkTruckid ==null">解除绑定</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -211,10 +169,9 @@
 
 <script>
   export default {
-    name: "driver",
+    name: "BindTruck",
     data(){
       return{
-        truckTeams:[],
         multipleSelection: [],
         ids:"",
         total:null,
@@ -222,26 +179,24 @@
         currentPage:1,
         dialogFormVisible:false,
         dialogTitle:'',
-        searchDriver:{
-          name:'',
-          fkTeamid:'',
-          state:''
+        searchContact:{
+          fkTruckid:'',
+          fkDriverid:'',
+          drivername:'',
+          teamname:'',
+          bindId:''
         },
-        driver:{
-          name:'',
-          sex:null,
-          birth: null,
-          phone:'',
-          idcard:'',
-          state:null,
-          remark:'',
-          fkTeamid:null
+        contact:{
+          contactid:'',
+          fkTruckid:'',
+          fkDriverid:''
         },
-        drivers:[],
+        contacts:[],
+        trucks:[],
       }
     },
     watch:{
-      searchDriver:{
+      searchContact:{
         handler(){
           this.doSearch();
         },
@@ -250,124 +205,113 @@
       }
     },
     mounted(){
-      this.loaddrivers();
+      this.loadContacts();
+
     },
     methods:{
-      selectChanges(){
-        this.loadTruckTeams();
+      handleTruckChange(val) {
+        console.log(val);
+        this.contact.fkTruckid=val.truckid;
       },
       resetSearch(){
-        this.searchDriver={
-          name:'',
-          fkTeamid:'',
-          state:''
+        this.searchContact={
+          fkTruckid:'',
+          fkDriverid:'',
+          drivername:'',
+          teamname:'',
+          bindId:''
         }
       },
-      initdriver(){
-        this.driver={
-          name:'',
-          sex:null,
-          birth: null,
-          phone:'',
-          idcard:'',
-          state:null,
-          remark:'',
-          fkTeamid:null
+      initContact(){
+        this.contact={
+          contactid:'',
+          fkTruckid:'',
+          fkDriverid:''
         }
       },
 
-      adddriver(){
-
-        if (this.driver.driverid) {
-          this.putRequest('/driver/put',this.driver).then(res=>{
+      bindTruck(){
+        console.log(this.contact);
+          this.putRequest('/contact/put',this.contact).then(res=>{
             if (res){
               this.dialogFormVisible = false;
-              this.initdriver();
-              this.loaddrivers();
+              this.initContact();
+              this.loadContacts();
             }
           });
-          return;
-        }
-        this.postRequest("/driver/add",this.driver).then(res=>{
-          if (res){
-            this.dialogFormVisible = false;
-            this.initdriver();
-            this.loaddrivers();
-          }
-        })
-      },
-      loaddrivers(){
-        this.postRequest("/driver/getAllByPage?page="+this.currentPage+"&size="+this.pageSize+ "&name="+
-          this.searchDriver.name+ "&fkTeamid="+this.searchDriver.fkTeamid+"&state="+this.searchDriver.state).then(res=>{
-          if (res){
-            this.drivers=res.data.data;
-            this.total = res.data.total;
-          }
-        })
-      },
-      doSearch(){
-        let page = 1;
-        let size = 10;
-        this.postRequest("/driver/getAllByPage?page="+page+"&size="+size+"&name="+this.searchDriver.name+
-          "&fkTeamid="+this.searchDriver.fkTeamid+"&state="+this.searchDriver.state).then(res=>{
-          if (res) {
-            this.drivers=res.data.data;
-            this.total = res.data.total;
-          }
-        })
       },
       handleSizeChange(size){
         this.pageSize = size;
-        this.loaddrivers();
+        this.loadContacts();
       },
       handleCurrentChange(page){
         this.currentPage = page;
-        this.loaddrivers();
+        this.loadContacts();
       },
       handleSelectionChange(val) {
         this.multipleSelection=val;
 
       },
-      deleteById(id){
+      unbindById(id){
         let ids = id;
-        this.deleteByIds(ids);
-        this.loaddrivers();
+        this.unbindByIds(ids);
+        this.loadContacts();
       },
-      multiDelete(){
+      multiUnbind(){
         let ids = '';
         this.multipleSelection.forEach(data=>{
-          ids  += data.driverid+',';
+          ids  += data.contactid+',';
         });
-        this.deleteByIds(ids);
-        this.loaddrivers();
+        this.unbindByIds(ids);
+        this.loadContacts();
       },
 
-      deleteByIds(data){
-        this.deleteRequest("/driver/delete/"+data).then(res=>{
+      unbindByIds(data){
+        this.putRequest("/contact/delete/"+data).then(res=>{
             if (res){
-              this.loaddrivers();
+              this.loadContacts();
             }
           }
         )
       },
       showDialog(data){
-        this.loadTruckTeams();
+        this.loadTrucks(data);
         this.dialogFormVisible=true;
-        if(data === 'add'){
-          this.dialogTitle = '添加驾驶员';
-          return;
-        }
-        this.dialogTitle='编辑';
-        this.driver = data;
+        this.dialogTitle='绑定';
+        this.contact = data;
 
       },
-      loadTruckTeams(){
-        this.postRequest("/truckTeam/getAllByPage").then(res=>{
+      loadTrucks(data){
+        this.postRequest("/truck/getAllByPage?fkTeamid="+data.truckteam.teamid).then(res=>{
+          if (res) {
+            this.trucks = res.data.data;
+          }
+        })
+        // this.getRequest("/contact/getTrucks?fkTeamid="+data.truckteam.teamid).then(res=>{
+        //   if (res){
+        //     this.trucks=res.data;
+        //   }
+        // })
+      },
+
+
+      loadContacts(){
+        this.getRequest("/contact/getAll?page=" +this.currentPage+"&size="+this.pageSize+"&fkTruckid="+this.searchContact.fkTruckid+
+          "&fkDriverid="+this.searchContact.fkDriverid+"&drivername="+this.searchContact.drivername+
+          "&teamname="+this.searchContact.teamname+"&bindId="+this.searchContact.bindId).then(res=>{
           if (res){
-            this.truckTeams=res.data.data;
+            console.log(res.data.data);
+            this.contacts=res.data.data;
+            this.total = res.data.total;
           }
         })
       },
+
+      doSearch(){
+        this.currentPage=1;
+        this.pageSize=10;
+        this.loadContacts();
+      }
     }
   }
 </script>
