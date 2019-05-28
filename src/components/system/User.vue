@@ -26,7 +26,8 @@
         },
       methods: {
         handleClick(tab, event) {
-          //this.$refs.user
+          this.$refs.userManager.loadRoles();
+          this.$refs.rolesManager.loadUsers();
         }
       }
     }
