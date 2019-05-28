@@ -4,6 +4,7 @@ import Login from '@/components/Login'
 import Home from '@/components/Home'
 import Truck from '@/components/truck/Truck'
 import TruckTeam from '@/components/truck/TruckTeam'
+import BindTruck from '@/components/truck/BindTruck'
 import Driver from '@/components/driver/Driver'
 import Capacity from '@/components/capacity/Capacity'
 import CapacityHistory from '@/components/capacity/CapacityHistory'
@@ -46,6 +47,11 @@ export default new Router({
           path:'/truck',
           name:'车辆信息维护',
           component:Truck
+        },
+        {
+          path:'/bindTruck',
+          name:'绑定车辆信息',
+          component:BindTruck
         },
         {
           path:'/truckTeam',

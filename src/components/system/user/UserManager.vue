@@ -15,7 +15,7 @@
               </el-input>
             </td>
             <td style="padding-left: 10px">
-              <el-tag>姓名</el-tag>
+              <el-tag>性别</el-tag>
               <template>
                 <el-select v-model="searchUser.sex" placeholder="请选择">
                   <el-option label="全部" :value="''"></el-option>

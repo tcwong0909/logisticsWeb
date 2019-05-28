@@ -25,114 +25,114 @@
       </el-card>
     </div>
     <el-card shadow="never" body-style="padding:0;padding-top:1px">
-    <div >
-      <el-button type="primary" icon="el-icon-plus" size="small" @click="showDialog('add')">添加车辆</el-button>
-      <el-button type="danger" icon="el-icon-minus" size="small" @click="multiDelete" :disabled="multipleSelection.length===0">批量删除</el-button>
-    </div>
-    <div>
-      <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible">
-        <el-form :model="truckTeam">
-          <tr>
-            <el-tag style="width: 6vw">车队名称</el-tag>
-            <el-input v-model="truckTeam.teamname" style="width: 10vw;padding-left: 1vw"></el-input>
-          </tr>
-          <tr>
-            <el-tag style="width: 6vw">车队负责人</el-tag>
-            <el-input v-model="truckTeam.leader" style="width: 10vw;padding-left: 1vw"></el-input>
-          </tr>
-          <tr>
-            <el-tag style="width: 6vw">备注</el-tag>
-            <el-input v-model="truckTeam.remark" style="width: 10vw;padding-left: 1vw"></el-input>
-          </tr>
-          <tr>
-            <el-tag style="width: 6vw">数据记录状态</el-tag>
-            <el-radio v-model="truckTeam.isdelete" :label= 1>使用中</el-radio>
-            <el-radio v-model="truckTeam.isdelete" :label= 2>该记录已删除</el-radio>
-          </tr>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="addtruckTeam">确 定</el-button>
-        </div>
-      </el-dialog>
-    </div>
-    <div style="margin-top: 5px">
-      <el-table
-        :data="truckTeams"
-        border
-        style="width: 100%"
-        @selection-change="handleSelectionChange">
-        <el-table-column
-          type="selection"
-          width="35">
-        </el-table-column>
-        <el-table-column
-          prop="teamid"
-          label="编号"
-          width="50">
-        </el-table-column>
-        <el-table-column
-          prop="teamname"
-          label="车队名称"
-          width="110">
-        </el-table-column>
-        <el-table-column
-          prop="leader"
-          width="100"
-          label="车队负责人">
-        </el-table-column>
-        <el-table-column
-          prop="remark"
-          width="80"
-          label="备注">
-        </el-table-column>
-        <el-table-column
-          prop="checkintime"
-          width="100"
-          label="创队时间">
-        </el-table-column>
-        <el-table-column
-          label="数据记录状态"
-          width="110">
-          <template slot-scope="scope">
-            <el-tag v-if="scope.row.isdelete ===1" type="success" > 使用中</el-tag>
-            <el-tag v-else-if="scope.row.isdelete ===2" type="danger"> 该记录已删除</el-tag>
-            <el-tag v-else>未知</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="altertime"
-          label="修改时间"
-          width="110">
-        </el-table-column>
-        <el-table-column
-          label="操作">
-          <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="showDialog(scope.row)">编辑</el-button>
-            <el-button type="danger" size="mini" @click="deleteById(scope.row.teamid)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
-    <div style="display: flex;justify-content: flex-end;padding: 15px">
-      <el-pagination
-        background
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        layout="total, sizes, prev, pager, next, jumper"
-        :page-sizes="[5, 10, 15, 20]"
-        :page-size="pageSize"
-        :total="total">
-      </el-pagination>
-    </div>
+      <div >
+        <el-button type="primary" icon="el-icon-plus" size="small" @click="showDialog('add')">添加车辆</el-button>
+        <el-button type="danger" icon="el-icon-minus" size="small" @click="multiDelete" :disabled="multipleSelection.length===0">批量删除</el-button>
+      </div>
+      <div>
+        <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible">
+          <el-form :model="truckTeam">
+            <tr>
+              <el-tag style="width: 6vw">车队名称</el-tag>
+              <el-input v-model="truckTeam.teamname" style="width: 10vw;padding-left: 1vw"></el-input>
+            </tr>
+            <tr>
+              <el-tag style="width: 6vw">车队负责人</el-tag>
+              <el-input v-model="truckTeam.leader" style="width: 10vw;padding-left: 1vw"></el-input>
+            </tr>
+            <tr>
+              <el-tag style="width: 6vw">备注</el-tag>
+              <el-input v-model="truckTeam.remark" style="width: 10vw;padding-left: 1vw"></el-input>
+            </tr>
+            <tr>
+              <el-tag style="width: 6vw">数据记录状态</el-tag>
+              <el-radio v-model="truckTeam.isdelete" :label= 1>使用中</el-radio>
+              <el-radio v-model="truckTeam.isdelete" :label= 2>该记录已删除</el-radio>
+            </tr>
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="addtruckTeam">确 定</el-button>
+          </div>
+        </el-dialog>
+      </div>
+      <div style="margin-top: 5px">
+        <el-table
+          :data="truckTeams"
+          border
+          style="width: 100%"
+          @selection-change="handleSelectionChange">
+          <el-table-column
+            type="selection"
+            width="35">
+          </el-table-column>
+          <el-table-column
+            prop="teamid"
+            label="编号"
+            width="50">
+          </el-table-column>
+          <el-table-column
+            prop="teamname"
+            label="车队名称"
+            width="110">
+          </el-table-column>
+          <el-table-column
+            prop="leader"
+            width="100"
+            label="车队负责人">
+          </el-table-column>
+          <el-table-column
+            prop="remark"
+            width="80"
+            label="备注">
+          </el-table-column>
+          <el-table-column
+            prop="checkintime"
+            width="100"
+            label="创队时间">
+          </el-table-column>
+          <el-table-column
+            label="数据记录状态"
+            width="110">
+            <template slot-scope="scope">
+              <el-tag v-if="scope.row.isdelete ===1" type="success" > 使用中</el-tag>
+              <el-tag v-else-if="scope.row.isdelete ===2" type="danger"> 该记录已删除</el-tag>
+              <el-tag v-else>未知</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="altertime"
+            label="修改时间"
+            width="110">
+          </el-table-column>
+          <el-table-column
+            label="操作">
+            <template slot-scope="scope">
+              <el-button type="primary" size="mini" @click="showDialog(scope.row)">编辑</el-button>
+              <el-button type="danger" size="mini" @click="deleteById(scope.row.teamid)">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <div style="display: flex;justify-content: flex-end;padding: 15px">
+        <el-pagination
+          background
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          layout="total, sizes, prev, pager, next, jumper"
+          :page-sizes="[5, 10, 15, 20]"
+          :page-size="pageSize"
+          :total="total">
+        </el-pagination>
+      </div>
     </el-card>
   </div>
 </template>
 
 <script>
   export default {
-    name: "TruckTeam",
+    name: "TruckTeaming",
     data(){
       return{
         multipleSelection: [],
