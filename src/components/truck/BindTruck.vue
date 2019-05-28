@@ -287,11 +287,6 @@
             this.trucks = res.data.data;
           }
         })
-        // this.getRequest("/contact/getTrucks?fkTeamid="+data.truckteam.teamid).then(res=>{
-        //   if (res){
-        //     this.trucks=res.data;
-        //   }
-        // })
       },
 
 
