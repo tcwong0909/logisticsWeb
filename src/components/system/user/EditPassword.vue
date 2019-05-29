@@ -21,6 +21,7 @@
 </template>
 
 <script>
+  import md5 from 'js-md5'
   export default {
     name: "EditPassword",
     data() {
@@ -40,6 +41,8 @@
 
     methods: {
       editPassword(){
+        this.newPassword.oldPassword = md5(this.newPassword.oldPassword);
+        this.newPassword.password = md5(this.newPassword.password);
         this.putRequest("/user/password",this.newPassword).then(res=>{
           if (res.data) {
             this.$router.replace("/");

@@ -62,7 +62,7 @@
           </el-table-column>
           <el-table-column
             prop="procname"
-            width="120"
+            width="180"
             label="存储过程名">
           </el-table-column>
           <el-table-column
@@ -83,7 +83,7 @@
           <el-table-column
             prop="parameters"
             label="参数"
-            width="400">
+            width="430">
           </el-table-column>
           <el-table-column
             width="80"
@@ -96,7 +96,7 @@
           </el-table-column>
           <el-table-column
             prop="exception"
-            width="100"
+            width="110"
             label="异常信息">
           </el-table-column>
         </el-table>
