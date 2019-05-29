@@ -12,6 +12,8 @@ import CostAccounting from '@/components/cost/CostAccounting'
 import CostMaintenance from '@/components/cost/CostMaintenance'
 import Schedule from '@/components/schedule/Schedule'
 import User from '@/components/system/User'
+import LogDic from '@/components/system/LogDic'
+import SysLog from '@/components/system/SysLog'
 import BillCreate from '@/components/waybill/BillCreate'
 import BillReceive from '@/components/waybill/BillReceive'
 
@@ -174,6 +176,16 @@ export default new Router({
           path:'/user',
           name:'用户维护',
           component:User
+        },
+        {
+          path:'/logDic',
+          name:'日志字典',
+          component:LogDic
+        },
+        {
+          path:'/sysLog',
+          name:'系统日志',
+          component:SysLog
         }
       ]
     },
