@@ -26,6 +26,7 @@
 </template>
 
 <script>
+  import md5 from 'js-md5'
 export default {
   name: 'Login',
   data () {
@@ -33,12 +34,13 @@ export default {
         remember:'false',
         user:{
           account:'admin',
-          password:'admin'
+          password:'123456',
         }
     }
   },
   methods:{
     login(){
+      this.user.password = md5(this.user.password);
         this.postRequest("/login",this.user).then(res=>{
             if (res){
               console.log(res.data)

@@ -4,6 +4,7 @@ import Login from '@/components/Login'
 import Home from '@/components/Home'
 import Truck from '@/components/truck/Truck'
 import TruckTeam from '@/components/truck/TruckTeam'
+import BindTruck from '@/components/truck/BindTruck'
 import Driver from '@/components/driver/Driver'
 import Capacity from '@/components/capacity/Capacity'
 import CapacityHistory from '@/components/capacity/CapacityHistory'
@@ -11,6 +12,8 @@ import CostAccounting from '@/components/cost/CostAccounting'
 import CostMaintenance from '@/components/cost/CostMaintenance'
 import Schedule from '@/components/schedule/Schedule'
 import User from '@/components/system/User'
+import LogDic from '@/components/system/LogDic'
+import SysLog from '@/components/system/SysLog'
 import BillCreate from '@/components/waybill/BillCreate'
 import BillReceive from '@/components/waybill/BillReceive'
 
@@ -46,6 +49,11 @@ export default new Router({
           path:'/truck',
           name:'车辆信息维护',
           component:Truck
+        },
+        {
+          path:'/bindTruck',
+          name:'绑定车辆信息',
+          component:BindTruck
         },
         {
           path:'/truckTeam',
@@ -168,6 +176,16 @@ export default new Router({
           path:'/user',
           name:'用户维护',
           component:User
+        },
+        {
+          path:'/logDic',
+          name:'日志字典',
+          component:LogDic
+        },
+        {
+          path:'/sysLog',
+          name:'系统日志',
+          component:SysLog
         }
       ]
     },
