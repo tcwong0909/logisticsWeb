@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <div>
       <el-card  body-style="padding:10px" shadow="never" style="display: flex;align-items: center">
         <el-form>
@@ -55,30 +54,41 @@
     <div>
       <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible">
         <el-form :model="driver">
-          <tr>
-            <el-tag>驾驶员姓名</el-tag>
-            <el-input v-model="driver.name" style="width: 10vw"></el-input>
-            <el-tag>性别</el-tag>
-            <el-radio v-model="driver.sex" :label= 1>男</el-radio>
-            <el-radio v-model="driver.sex" :label= 2>女</el-radio>
-          </tr>
-          <tr>
-            <el-tag style="margin-left: 28px">出生日期</el-tag>
+          <el-row style="margin-bottom: 5px">
+            <el-col :span="12">
+              <el-tag style="width:80px">驾驶员姓名</el-tag>
+              <el-input v-model="driver.name" style="width: 10vw"></el-input>
+            </el-col>
+            <el-col :span="12">
+              <el-tag style="width:70px">性别</el-tag>
+              <el-radio v-model="driver.sex" :label= 1>男</el-radio>
+              <el-radio v-model="driver.sex" :label= 2>女</el-radio>
+            </el-col>
+          </el-row>
+          <el-row style="margin-bottom: 5px">
+            <el-col :span="12">
+            <el-tag style="width:80px" >出生日期</el-tag>
             <el-date-picker
+              style="width: 10vw"
               v-model="driver.birth"
               type="date"
               placeholder="选择日期">
             </el-date-picker>
-
-            <el-tag style="margin-left: 28px;width: 5vw">联系电话</el-tag>
+            </el-col>
+            <el-col :span="12">
+            <el-tag >联系电话</el-tag>
             <el-input v-model="driver.phone" style="width: 10vw" ></el-input>
-          </tr>
-          <tr>
-            <el-tag style="margin-left: 28px;width: 5vw">身份证号码</el-tag>
+            </el-col>
+          </el-row>
+          <el-row style="margin-bottom: 5px">
+            <el-col :span="12">
+            <el-tag style="width:80px">身份证号码</el-tag>
             <el-input v-model="driver.idcard" style="width: 10vw" ></el-input>
+            </el-col>
+            <el-col :span="12">
             <el-tag>所属车队</el-tag>
             <template >
-              <el-select v-model="driver.fkTeamid" placeholder="请选择">
+              <el-select v-model="driver.fkTeamid" placeholder="请选择" style="width: 10vw">
                 <el-option
                   v-for="truckTeam in truckTeams"
                   :key="truckTeam.teamid"
@@ -87,14 +97,19 @@
                 </el-option>
               </el-select>
             </template>
-          </tr>
-          <tr>
-            <el-tag>工作状态</el-tag>
+            </el-col>
+          </el-row>
+          <el-row style="margin-bottom: 5px">
+            <el-col :span="12">
+            <el-tag style="width:80px">工作状态</el-tag>
             <el-radio v-model="driver.state" :label= 1>承运中</el-radio>
             <el-radio v-model="driver.state" :label= 2>空闲</el-radio>
-            <el-tag style="width: 5vw">备注</el-tag>
+            </el-col>
+            <el-col :span="12">
+            <el-tag style="width:70px">备注</el-tag>
             <el-input v-model="driver.remark" style="width: 10vw"></el-input>
-          </tr>
+            </el-col>
+          </el-row>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -106,6 +121,8 @@
       <el-table
         :data="drivers"
         border
+        v-loading="loading"
+        element-loading-text="拼命加载中"
         style="width: 100%"
         @selection-change="handleSelectionChange">
         <el-table-column
@@ -170,7 +187,7 @@
           width="100"
           label="加入时间">
         </el-table-column>
-        <el-table-column
+       <!-- <el-table-column
           label="数据记录状态"
           width="110">
           <template slot-scope="scope">
@@ -178,7 +195,7 @@
             <el-tag v-else-if="scope.row.isdelete ===2" type="danger"> 该记录已删除</el-tag>
             <el-tag v-else>未知</el-tag>
           </template>
-        </el-table-column>
+        </el-table-column>-->
         <el-table-column
           prop="altertime"
           width="100"
@@ -214,6 +231,7 @@
     name: "driver",
     data(){
       return{
+        loading:true,
         truckTeams:[],
         multipleSelection: [],
         ids:"",
@@ -300,6 +318,7 @@
         this.postRequest("/driver/getAllByPage?page="+this.currentPage+"&size="+this.pageSize+ "&name="+
           this.searchDriver.name+ "&fkTeamid="+this.searchDriver.fkTeamid+"&state="+this.searchDriver.state).then(res=>{
           if (res){
+            this.loading=false;
             this.drivers=res.data.data;
             this.total = res.data.total;
           }
@@ -343,17 +362,33 @@
       },
 
       deleteByIds(data){
-        this.deleteRequest("/driver/delete/"+data).then(res=>{
-            if (res){
-              this.loaddrivers();
+        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.deleteRequest("/driver/delete/"+data).then(res=>{
+              if (res){
+                this.loaddrivers();
+              }
             }
-          }
-        )
+          );
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
       },
       showDialog(data){
         this.loadTruckTeams();
         this.dialogFormVisible=true;
         if(data === 'add'){
+          this.initdriver();
           this.dialogTitle = '添加驾驶员';
           return;
         }

@@ -1,10 +1,10 @@
 <template>
   <el-tabs v-model="activeName" @tab-click="handleClick">
     <el-tab-pane label="承运车队" name="first">
-      <Trucking ref="trucking"></Trucking>
+      <TruckTeaming ref="truckTeaming"></TruckTeaming>
     </el-tab-pane>
     <el-tab-pane label="承运车辆" name="second">
-      <TruckTeaming ref="truckTeaming"></TruckTeaming>
+      <Trucking ref="trucking"></Trucking>
     </el-tab-pane>
   </el-tabs>
 </template>

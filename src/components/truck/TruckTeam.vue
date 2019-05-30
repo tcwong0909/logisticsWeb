@@ -1,16 +1,16 @@
 <template>
-  <div>
+  <div  v-loading="loading" element-loading-text="拼命加载中">
     <div>
       <el-card  body-style="padding:10px" shadow="never" style="display: flex;align-items: center">
         <el-form>
           <tr>
             <td>
-              <el-input placeholder="请输入内容" suffix-icon="el-icon-search" v-model="searchTeam.teamname">
+              <el-input placeholder="请输入车队名称" suffix-icon="el-icon-search" v-model="searchTeam.teamname">
                 <template slot="prepend">车队名称</template>
               </el-input>
             </td>
             <td>
-              <el-input placeholder="请输入内容" suffix-icon="el-icon-search" v-model="searchTeam.leader">
+              <el-input placeholder="请输入负责人名称" suffix-icon="el-icon-search" v-model="searchTeam.leader">
                 <template slot="prepend">车队负责人</template>
               </el-input>
             </td>
@@ -32,23 +32,23 @@
     <div>
       <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible">
         <el-form :model="truckTeam">
-          <tr>
+          <el-row :gutter="20" style="margin-bottom: 5px;margin-left: 10px">
             <el-tag style="width: 6vw">车队名称</el-tag>
             <el-input v-model="truckTeam.teamname" style="width: 10vw;padding-left: 1vw"></el-input>
-          </tr>
-          <tr>
+          </el-row>
+          <el-row :gutter="20" style="margin-bottom: 5px;margin-left: 10px">
             <el-tag style="width: 6vw">车队负责人</el-tag>
             <el-input v-model="truckTeam.leader" style="width: 10vw;padding-left: 1vw"></el-input>
-          </tr>
-          <tr>
+          </el-row>
+          <el-row :gutter="20" style="margin-bottom: 5px;margin-left: 10px">
             <el-tag style="width: 6vw">备注</el-tag>
             <el-input v-model="truckTeam.remark" style="width: 10vw;padding-left: 1vw"></el-input>
-          </tr>
-          <tr>
+          </el-row>
+          <el-row :gutter="20" style="margin-bottom: 5px;margin-left: 10px">
             <el-tag style="width: 6vw">数据记录状态</el-tag>
             <el-radio v-model="truckTeam.isdelete" :label= 1>使用中</el-radio>
             <el-radio v-model="truckTeam.isdelete" :label= 2>该记录已删除</el-radio>
-          </tr>
+          </el-row>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -83,7 +83,7 @@
         </el-table-column>
         <el-table-column
           prop="remark"
-          width="80"
+          width="180"
           label="备注">
         </el-table-column>
         <el-table-column
@@ -91,7 +91,7 @@
           width="100"
           label="创队时间">
         </el-table-column>
-        <el-table-column
+        <!--<el-table-column
           label="数据记录状态"
           width="110">
           <template slot-scope="scope">
@@ -99,7 +99,7 @@
             <el-tag v-else-if="scope.row.isdelete ===2" type="danger"> 该记录已删除</el-tag>
             <el-tag v-else>未知</el-tag>
           </template>
-        </el-table-column>
+        </el-table-column>-->
         <el-table-column
           prop="altertime"
           label="修改时间"
@@ -135,6 +135,7 @@
     name: "TruckTeam",
     data(){
       return{
+        loading:true,
         multipleSelection: [],
         ids:"",
         total:null,
@@ -147,6 +148,7 @@
           leader:''
         },
         truckTeam:{
+          teamid:'',
           teamname:'',
           leader:'',
           remark: '',
@@ -187,6 +189,7 @@
       },
       inittruckTeam(){
         this.truckTeam={
+          teamid:'',
           teamname:'',
           leader:'',
           remark: '',
@@ -195,13 +198,11 @@
       },
 
       addtruckTeam(){
-
         if (this.truckTeam.teamid) {
-
           this.putRequest('/truckTeam/put',this.truckTeam).then(res=>{
+            console.log(res);
             if (res){
               this.dialogFormVisible = false;
-              this.inittruckTeam();
               this.loadtruckTeams();
             }
           });
@@ -210,7 +211,6 @@
         this.postRequest("/truckTeam/add",this.truckTeam).then(res=>{
           if (res){
             this.dialogFormVisible = false;
-            this.inittruckTeam();
             this.loadtruckTeams();
           }
         })
@@ -219,6 +219,7 @@
         this.postRequest("/truckTeam/getAllByPage?page="+this.currentPage+"&size="+this.pageSize+
           "&teamname="+this.searchTeam.teamname+"&leader="+this.searchTeam.leader).then(res=>{
           if (res){
+            this.loading=false;
             this.truckTeams=res.data.data;
             this.total = res.data.total;
           }
@@ -244,23 +245,41 @@
       multiDelete(){
         let ids = '';
         this.multipleSelection.forEach(data=>{
-          ids  += data.truckTeamid+',';
+          ids  += data.teamid+',';
         });
         this.deleteByIds(ids);
         this.loadtruckTeams();
       },
 
       deleteByIds(data){
-        this.deleteRequest("/truckTeam/delete/"+data).then(res=>{
-            if (res){
-              this.loadtruckTeams();
+        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.deleteRequest("/truckTeam/delete/"+data).then(res=>{
+              if (res){
+                this.$message({
+                  type: 'success',
+                  message: '删除成功!'
+                });
+                this.loadtruckTeams();
+              }
             }
-          }
-        )
+          );
+
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+
       },
       showDialog(data){
         this.dialogFormVisible=true;
         if(data === 'add'){
+          this.inittruckTeam();
           this.dialogTitle = '添加车队';
           return;
         }

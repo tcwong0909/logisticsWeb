@@ -3,8 +3,8 @@
     <div>
       <el-steps :active="active" simple >
         <el-step title="录入成本" icon="el-icon-edit" @click.native="addCost" status="finish"></el-step>
-        <el-step title="修改成本" icon="el-icon-upload" @click.native="editCost" status="success	"></el-step>
-        <el-step title="查询承运任务" icon="el-icon-picture" @click.native="queryCost" status="success	"></el-step>
+        <el-step title="修改成本" icon="el-icon-upload" @click.native="editCost" ></el-step>
+        <el-step title="查询承运任务" icon="el-icon-picture" @click.native="queryCost" ></el-step>
       </el-steps>
     </div>
     <div v-show="active ===0">
@@ -45,8 +45,7 @@
         this.$refs.queryCost.loadCarrierss();
         console.log(this.active);
       }
-    }
-  }
+    }}
 </script>
 
 <style scoped>

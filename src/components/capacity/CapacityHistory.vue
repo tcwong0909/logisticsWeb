@@ -1,5 +1,5 @@
 <template>
-  <div >
+  <div v-loading="loading"  element-loading-text="拼命加载中" >
     <div>
       <el-card  body-style="padding:10px" shadow="never" style="display: flex;align-items: center">
         <el-form>
@@ -39,124 +39,11 @@
       </el-card>
     </div>
     <el-card shadow="never" body-style="padding:0;padding-top:1px">
-      <div  >
-        <el-button type="primary" icon="el-icon-plus" size="small" @click="showDialog('add')">添加承运单</el-button>
-        <el-button type="danger" icon="el-icon-minus" size="small" @click="multiDelete" :disabled="multipleSelection.length===0">批量删除</el-button>
-      </div>
-      <div >
-        <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible">
-          <el-steps :active="active" finish-status="success">
-            <el-step title="填写承运单"></el-step>
-            <el-step title="填写货物单"></el-step>
-          </el-steps>
-          <div v-show="active ===0" style="padding-top: 5vh">
-            <el-form :model="carriers">
-              <tr>
-                <el-tag>发货单位</el-tag>
-                <el-input v-model="carriers.sendcompany" style="width: 10vw"></el-input>
-                <el-tag >发货单位地址</el-tag>
-                <el-input v-model="carriers.sendaddress" style="width: 10vw"></el-input>
-              </tr>
-              <tr>
-                <el-tag>发货人</el-tag>
-                <el-input v-model="carriers.sendlinkman" style="width: 10vw"></el-input>
-                <el-tag >发货人电话</el-tag>
-                <el-input v-model="carriers.sendphone" style="width: 10vw"></el-input>
-              </tr>
-              <tr>
-                <el-tag>收货单位</el-tag>
-                <el-input v-model="carriers.receivecompany" style="width: 10vw"></el-input>
-                <el-tag >收货单位地址</el-tag>
-                <el-input v-model="carriers.fkReceiveaddress" style="width: 10vw"></el-input>
-              </tr>
-              <tr>
-                <el-tag>收货人/联系人</el-tag>
-                <el-input v-model="carriers.receivelinkman" style="width: 10vw"></el-input>
-                <el-tag >收货人电话/联系人电话</el-tag>
-                <el-input v-model="carriers.receivephone" style="width: 10vw"></el-input>
-              </tr>
-              <tr>
-                <el-tag style="margin-left: 28px">承运日期</el-tag>
-                <el-date-picker
-                  v-model="carriers.leaverdate"
-                  type="date"
-                  placeholder="选择日期">
-                </el-date-picker>
-                <el-tag style="margin-left: 28px">收货时间</el-tag>
-                <el-date-picker
-                  v-model="carriers.receivedate"
-                  type="date"
-                  placeholder="选择日期">
-                </el-date-picker>
-              </tr>
-              <tr>
-                <el-tag>完成情况</el-tag>
-                <el-radio v-model="carriers.finishedstate" :label= 0>待调度</el-radio>
-                <el-radio v-model="carriers.finishedstate" :label= 1>已调度</el-radio>
-                <el-radio v-model="carriers.finishedstate" :label= 2>已签收</el-radio>
-                <el-radio v-model="carriers.finishedstate" :label= 3>已结算</el-radio>
-              </tr>
-              <tr>
-                <el-tag>保险费</el-tag>
-                <el-input v-model="carriers.insurancecost" style="width: 10vw"></el-input>
-                <el-tag >运费</el-tag>
-                <el-input v-model="carriers.transportcost" style="width: 10vw"></el-input>
-                <el-tag >其他费用</el-tag>
-                <el-input v-model="carriers.othercost" style="width: 10vw"></el-input>
-              </tr>
-              <tr>
-                <el-tag>合计费用</el-tag>
-                <el-input v-model="totalcost" style="width: 10vw"></el-input>
-                <el-tag >备注</el-tag>
-                <el-input v-model="carriers.remark" style="width: 10vw"></el-input>
-              </tr>
-            </el-form>
-            <div slot="footer" class="dialog-footer" style="display: flex;justify-content: flex-end">
-              <el-button @click="dialogFormVisible = false" style="margin-top: 12px;" >取 消</el-button>
-              <el-button style="margin-top: 12px;" @click="next">下一步</el-button>
-            </div>
-          </div>
-          <div v-show="active ===1">
-            <el-form :model="carriers.goods">
-              <tr>
-                <el-tag>货物名称</el-tag>
-                <el-input v-model="carriers.goods.goodsname" style="width: 10vw"></el-input>
-              </tr>
-              <tr>
-                <el-tag >货物数量</el-tag>
-                <el-input v-model="carriers.goods.amount" style="width: 10vw"></el-input>
-              </tr>
-              <tr>
-                <el-tag>货物重量</el-tag>
-                <el-input v-model="carriers.goods.weight" style="width: 10vw"></el-input>
-              </tr>
-              <tr>
-                <el-tag >货物体积</el-tag>
-                <el-input v-model="carriers.goods.volume" style="width: 10vw"></el-input>
-              </tr>
-
-            </el-form>
-
-            <el-button style="margin-top: 12px;" @click="prev">上一步</el-button>
-
-            <div slot="footer" class="dialog-footer" style="display: flex;justify-content: flex-end">
-              <el-button @click="dialogFormVisible = false" style="margin-top: 12px;">取 消</el-button>
-              <el-button type="primary" @click="addCarrier" style="margin-top: 12px;">保存</el-button>
-            </div>
-
-          </div>
-        </el-dialog>
-      </div>
       <div style="margin-top: 5px;">
         <el-table
           :data="Carrierss"
           border
-          style="width: 100%"
-          @selection-change="handleSelectionChange">
-          <el-table-column
-            type="selection"
-            width="35">
-          </el-table-column>
+          style="width: 100%">
           <el-table-column
             prop="carriersid"
             label="编号"
@@ -169,16 +56,18 @@
               <el-popover
                 placement="top-start"
                 title="发货信息"
-                width="200"
-
+                width="300"
                 trigger="hover">
                 <div>
-                  {{scope.row.sendaddress}}
-                  {{scope.row.sendlinkman}}
-                  {{scope.row.sendphone}}
+                  发货地址：{{scope.row.sendaddress}}
                 </div>
-                <el-tag slot="reference"> {{scope.row.sendcompany}}</el-tag>
-
+                <div>
+                  发货联系人：{{scope.row.sendlinkman}}
+                </div>
+                <div>
+                 发货人联系电话：{{scope.row.sendphone}}
+                </div>
+                <el-link type="primary" slot="reference">{{scope.row.sendcompany}}</el-link>
               </el-popover>
             </template>
           </el-table-column>
@@ -189,14 +78,18 @@
               <el-popover
                 placement="top-start"
                 title="收货信息"
-                width="200"
+                width="300"
                 trigger="hover">
                 <div>
-                  {{scope.row.fkReceiveaddress}}
-                  {{scope.row.receivelinkman}}
-                  {{scope.row.receivephone}}
+                  收货地址：{{scope.row.fkReceiveaddress}}
                 </div>
-                <el-tag slot="reference">{{scope.row.receivecompany}}</el-tag>
+                <div>
+                  收货联系人：{{scope.row.receivelinkman}}
+                </div>
+                <div>
+                  收货人联系电话：{{scope.row.receivephone}}
+                </div>
+                <el-link type="primary" slot="reference">{{scope.row.receivecompany}}</el-link>
               </el-popover>
             </template>
           </el-table-column>
@@ -222,25 +115,18 @@
             </template>
           </el-table-column>
           <el-table-column
-            prop="remark"
+            prop="insurancecost"
             width="80"
-            label="费用信息">
-            <template slot-scope="scope">
-              <el-popover
-                placement="top-start"
-                title="费用信息"
-                width="200"
-                trigger="hover">
-                <slot>
-                  {{scope.row.insurancecost}}
-                  {{scope.row.transportcost}}
-                  {{scope.row.othercost}}
-                </slot>
-                <el-tag slot="reference">费用详情</el-tag>
-              </el-popover>
-            </template>
-          </el-table-column>
-          <el-table-column
+            label="保险费">
+          </el-table-column><el-table-column
+            prop="transportcost"
+            width="80"
+            label="运费">
+          </el-table-column><el-table-column
+            prop="othercost"
+            width="80"
+            label="其他费用">
+          </el-table-column><el-table-column
             prop="totalcost"
             width="80"
             label="合计费用">
@@ -257,20 +143,13 @@
           </el-table-column>
           <el-table-column
             prop="remark"
-            width="80"
+            width="160"
             label="备注">
           </el-table-column>
           <el-table-column
             prop="altertime"
             width="100"
             label="修改时间">
-          </el-table-column>
-          <el-table-column
-            label="操作">
-            <template slot-scope="scope">
-              <el-button type="primary" size="mini" @click="showDialog(scope.row)">编辑</el-button>
-              <el-button type="danger" size="mini" @click="deleteById(scope.row.carriersid)">删除</el-button>
-            </template>
           </el-table-column>
         </el-table>
       </div>
@@ -296,61 +175,22 @@
     name: "CapacityHistory",
     data(){
       return{
-        active: 0,
+        loading:true,
         finishedstates:[
           {"id":0,"name":"待调度"},
           {"id":1,"name":"已调度"},
           {"id":2,"name":"已签收"},
           {"id":3,"name":"已结算"},
         ],
-        multipleSelection: [],
-        ids:"",
         total:null,
         pageSize:10,
         currentPage:1,
-        dialogFormVisible:false,
-        dialogTitle:'',
         searchCarrierss:{
           sendcompany:'',
           receivecompany:'',
           finishedstate:''
         },
-        carriers:{
-          carriersid:null,
-          sendcompany:'',
-          sendaddress:'',
-          sendlinkman:'',
-          sendphone:'',
-          receivecompany:'',
-          fkReceiveaddress:'',
-          receivelinkman:'',
-          receivephone:'',
-          leaverdate:'',
-          receivedate:'',
-          finishedstate:'',
-          insurancecost:0,
-          transportcost:0,
-          othercost:0,
-          totalcost:0,
-          remark:'',
-          fkUserid:null,
-          checkintime:null,
-          altertime:null,
-          goods:{
-            goodsname:'',
-            amount:null,
-            weight:null,
-            volume:null
-          },
-        },
         Carrierss:[],
-      }
-    },
-    computed:{
-      totalcost(){
-
-        this.carriers.totalcost = parseFloat(this.carriers.insurancecost)+parseFloat(this.carriers.transportcost)+parseFloat(this.carriers.othercost);
-        return this.carriers.totalcost;
       }
     },
     watch:{
@@ -366,12 +206,7 @@
       this.loadCarrierss();
     },
     methods:{
-      next() {
-        this.active++;
-      },
-      prev(){
-        this.active--;
-      },
+
       resetSearch(){
         this.searchCarrierss={
           sendcompany:'',
@@ -379,59 +214,11 @@
           finishedstate:''
         }
       },
-      initCarrier(){
-        this.carriers={
-          carriersid:null,
-          sendcompany:'',
-          sendaddress:'',
-          sendlinkman:'',
-          sendphone:'',
-          receivecompany:'',
-          fkReceiveaddress:'',
-          receivelinkman:'',
-          receivephone:'',
-          leaverdate:'',
-          receivedate:'',
-          finishedstate:'',
-          insurancecost:0,
-          transportcost:0,
-          othercost:0,
-          totalcost:0,
-          remark:'',
-          fkUserid:null,
-          checkintime:null,
-          altertime:null,
-          goods:{
-            goodsname:'',
-            amount:null,
-            weight:null,
-            volume:null
-          },
-        }
-      },
-      addCarrier(){
-        if (this.carriers.carriersid) {
-          this.putRequest('/carriers/put',this.carriers).then(res=>{
-            if (res){
-              this.dialogFormVisible = false;
-              this.initCarrier();
-              this.loadCarrierss();
-            }
-          });
-          return;
-        }
-        this.postRequest("/carriers/add",this.carriers).then(res=>{
-          if (res){
-            this.dialogFormVisible = false;
-            this.initCarrier();
-            this.loadCarrierss();
-          }
-        })
-      },
       loadCarrierss(){
         this.postRequest("/carriers/getAll?page="+this.currentPage+"&size="+this.pageSize+
           "&sendcompany="+this.searchCarrierss.sendcompany+"&receivecompany="+this.searchCarrierss.receivecompany+"&finishedstate="+this.searchCarrierss.finishedstate).then(res=>{
           if (res){
+            this.loading=false;
             this.Carrierss=res.data.data;
             this.total = res.data.total;
           }
@@ -443,6 +230,7 @@
         this.postRequest("/carriers/getAll?page="+page+"&size="+size+
           "&sendcompany="+this.searchCarrierss.sendcompany+"&receivecompany="+this.searchCarrierss.receivecompany+"&finishedstate="+this.searchCarrierss.finishedstate).then(res=>{
           if (res){
+            this.loading=false;
             this.Carrierss=res.data.data;
             this.total = res.data.total;
           }
@@ -456,42 +244,7 @@
         this.currentPage = page;
         this.loadCarrierss();
       },
-      handleSelectionChange(val) {
-        this.multipleSelection=val;
 
-      },
-      deleteById(id){
-        let ids = id;
-        this.deleteByIds(ids);
-        this.loadCarrierss();
-      },
-      multiDelete(){
-        let ids = '';
-        this.multipleSelection.forEach(data=>{
-          ids  += data.carriersid+',';
-        });
-        this.deleteByIds(ids);
-        this.loadCarrierss();
-      },
-
-      deleteByIds(data){
-        this.deleteRequest("/carriers/delete/"+data).then(res=>{
-            if (res){
-              this.loadCarrierss();
-            }
-          }
-        )
-      },
-      showDialog(data){
-        this.dialogFormVisible=true;
-        if(data === 'add'){
-          this.dialogTitle = '添加承运单';
-          return;
-        }
-        this.dialogTitle='编辑';
-        this.carriers = data;
-
-      },
     }
   }
 </script>

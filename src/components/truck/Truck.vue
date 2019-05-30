@@ -1,11 +1,11 @@
 <template>
-    <div >
+    <div  v-loading="loading" element-loading-text="拼命加载中">
       <div>
         <el-card  body-style="padding:10px" shadow="never" style="display: flex;align-items: center">
           <el-form>
-            <tr>
+            <el-row>
               <td>
-               <el-input placeholder="请输入内容" suffix-icon="el-icon-search" v-model="searchTruck.number">
+               <el-input placeholder="请输入车牌号码" suffix-icon="el-icon-search" v-model="searchTruck.number">
                   <template slot="prepend">车牌号码</template>
                 </el-input>
               </td>
@@ -46,7 +46,7 @@
               <td style="padding-left: 10px">
               <el-button type="primary" icon="el-icon-search" @click="doSearch">搜索</el-button>
               </td>
-            </tr>
+            </el-row>
           </el-form>
         </el-card>
       </div>
@@ -58,39 +58,52 @@
         <div>
           <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible">
             <el-form :model="truck">
-              <tr>
-                <el-tag>车牌号码</el-tag>
-                <el-input v-model="truck.number" style="width: 10vw"></el-input>
-                <el-tag style="margin-left: 28px">购车日期</el-tag>
-                <el-date-picker
-                  v-model="truck.buydate"
-                  type="date"
-                  placeholder="选择日期">
-                </el-date-picker>
-              </tr>
-              <tr>
-                <el-tag>车辆类型</el-tag>
-                <el-select v-model="truck.type" style="width: 10vw">
-                  <el-option label="小型货车" value="小型货车"></el-option>
-                  <el-option label="中型货车" value="中型货车"></el-option>
-                  <el-option label="大型货车" value="大型货车"></el-option>
-                  <el-option label="其他" value="其他"></el-option>
-                </el-select>
-
-                <el-tag style="margin-left: 28px;width: 5vw">吨位</el-tag>
-                <el-input v-model="truck.tonnage" style="width: 10vw" placeholder="吨"></el-input>
-              </tr>
-              <tr>
-                <el-tag>工作状态</el-tag>
-                <el-radio v-model="truck.state" :label= 1>承运中</el-radio>
-                <el-radio v-model="truck.state" :label= 2>空闲</el-radio>
-                <el-tag style="width: 5vw">备注</el-tag>
-                <el-input v-model="truck.remark" style="width: 10vw"></el-input>
-              </tr>
-              <tr>
+              <el-row :gutter="20" style="margin-bottom: 5px">
+                <el-col :span="12">
+                  <el-tag>车牌号码</el-tag>
+                  <el-input v-model="truck.number" style="width: 10vw"></el-input>
+                </el-col>
+                <el-col :span="12">
+                  <el-tag style="margin-left: 28px">购车日期</el-tag>
+                  <el-date-picker
+                    v-model="truck.buydate"
+                    style="width: 160px;margin-left: 8px"
+                    type="date"
+                    placeholder="选择日期">
+                  </el-date-picker>
+                </el-col>
+              </el-row >
+              <el-row :gutter="20" style="margin-bottom: 5px">
+                <el-col :span="12">
+                  <el-tag>车辆类型</el-tag>
+                  <el-select v-model="truck.type" style="width: 10vw">
+                    <el-option label="小型货车" value="小型货车"></el-option>
+                    <el-option label="中型货车" value="中型货车"></el-option>
+                    <el-option label="大型货车" value="大型货车"></el-option>
+                    <el-option label="其他" value="其他"></el-option>
+                  </el-select>
+                </el-col>
+                <el-col :span="12">
+                  <el-tag style="margin-left: 28px;width: 5vw">吨位</el-tag>
+                  <el-input v-model="truck.tonnage" style="width: 10vw" placeholder="吨"></el-input>
+                </el-col>
+              </el-row>
+              <el-row :gutter="80" style="margin-bottom: 5px">
+                <el-col :span="12">
+                  <el-tag>工作状态</el-tag>
+                  <el-radio v-model="truck.state" :label= 1>承运中</el-radio>
+                  <el-radio v-model="truck.state" :label= 2>空闲</el-radio>
+                </el-col>
+                <el-col :span="12">
+                  <el-tag style="width: 5vw">备注</el-tag>
+                  <el-input v-model="truck.remark" style="width: 10vw"></el-input>
+                </el-col>
+              </el-row>
+              <el-row :gutter="20" style="margin-bottom: 5px">
+                <el-col :span="12">
                 <el-tag>所属车队</el-tag>
                 <template >
-                  <el-select v-model="truck.fkTeamid" placeholder="请选择">
+                  <el-select v-model="truck.fkTeamid" placeholder="请选择" style="width: 10vw">
                     <el-option
                       v-for="truckTeam in truckTeams"
                       :key="truckTeam.teamid"
@@ -99,8 +112,8 @@
                     </el-option>
                   </el-select>
                 </template>
-              </tr>
-
+                </el-col>
+              </el-row>
             </el-form>
             <div slot="footer" class="dialog-footer">
               <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -217,6 +230,7 @@
         name: "Truck",
         data(){
           return{
+            loading:true,
             trucktypes:["小型货车","中型货车","大型货车","其他"],
             truckTeams:[],
             multipleSelection: [],
@@ -284,7 +298,6 @@
               this.putRequest('/truck/put',this.truck).then(res=>{
                 if (res){
                   this.dialogFormVisible = false;
-                  this.initTruck();
                   this.loadTrucks();
                 }
               });
@@ -293,7 +306,6 @@
             this.postRequest("/truck/add",this.truck).then(res=>{
               if (res){
                 this.dialogFormVisible = false;
-                this.initTruck();
                 this.loadTrucks();
               }
             })
@@ -301,6 +313,7 @@
           loadTrucks(){
             this.postRequest("/truck/getAllByPage?page="+this.currentPage+"&size="+this.pageSize+
               "&number="+this.searchTruck.number+"&type="+this.searchTruck.type+"&fkTeamid="+this.searchTruck.fkTeamid).then(res=>{
+                this.loading=false;
               if (res){
                 this.trucks=res.data.data;
                 this.total = res.data.total;
@@ -314,6 +327,7 @@
             let page = 1;
             let size = 10;
             this.getRequest("/truck/search?page="+page+"&size="+size+"&number="+number+"&type="+type+"&fkTeamid="+fkTeamid).then(res=>{
+              this.loading=false;
               if (res){
                 this.trucks=res.data.data;
                 this.total = res.data.total;
@@ -347,17 +361,34 @@
           },
 
           deleteByIds(data){
-            this.deleteRequest("/truck/delete/"+data).then(res=>{
-              if (res){
-                this.loadTrucks();
-              }
-              }
-            )
+            this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              this.deleteRequest("/truck/delete/"+data).then(res=>{
+                  if (res){
+                    this.$message({
+                      type: 'success',
+                      message: '删除成功!'
+                    });
+                    this.loadTrucks();
+                  }
+                }
+              );
+            }).catch(() => {
+              this.$message({
+                type: 'info',
+                message: '已取消删除'
+              });
+            });
+
           },
           showDialog(data){
             this.loadtruckTeams();
             this.dialogFormVisible=true;
             if(data === 'add'){
+              this.initTruck();
             this.dialogTitle = '添加车辆';
               return;
             }

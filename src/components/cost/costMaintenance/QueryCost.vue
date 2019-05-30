@@ -56,16 +56,18 @@
               <el-popover
                 placement="top-start"
                 title="发货信息"
-                width="200"
-
+                width="300"
                 trigger="hover">
                 <div>
-                  {{scope.row.sendaddress}}
-                  {{scope.row.sendlinkman}}
-                  {{scope.row.sendphone}}
+                  发货地址：{{scope.row.sendaddress}}
                 </div>
-                <el-tag slot="reference"> {{scope.row.sendcompany}}</el-tag>
-
+                <div>
+                  发货联系人：{{scope.row.sendlinkman}}
+                </div>
+                <div>
+                  发货人联系电话：{{scope.row.sendphone}}
+                </div>
+                <el-link type="primary" slot="reference">{{scope.row.sendcompany}}</el-link>
               </el-popover>
             </template>
           </el-table-column>
@@ -76,14 +78,18 @@
               <el-popover
                 placement="top-start"
                 title="收货信息"
-                width="200"
+                width="300"
                 trigger="hover">
                 <div>
-                  {{scope.row.fkReceiveaddress}}
-                  {{scope.row.receivelinkman}}
-                  {{scope.row.receivephone}}
+                  收货地址：{{scope.row.fkReceiveaddress}}
                 </div>
-                <el-tag slot="reference">{{scope.row.receivecompany}}</el-tag>
+                <div>
+                  收货联系人：{{scope.row.receivelinkman}}
+                </div>
+                <div>
+                  收货人联系电话：{{scope.row.receivephone}}
+                </div>
+                <el-link type="primary" slot="reference">{{scope.row.receivecompany}}</el-link>
               </el-popover>
             </template>
           </el-table-column>
@@ -109,29 +115,22 @@
             </template>
           </el-table-column>
           <el-table-column
-            prop="remark"
+            prop="insurancecost"
             width="80"
-            label="费用信息">
-            <template slot-scope="scope">
-              <el-popover
-                placement="top-start"
-                title="费用信息"
-                width="200"
-                trigger="hover">
-                <slot>
-                  {{scope.row.insurancecost}}
-                  {{scope.row.transportcost}}
-                  {{scope.row.othercost}}
-                </slot>
-                <el-tag slot="reference">费用详情</el-tag>
-              </el-popover>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="totalcost"
-            width="80"
-            label="合计费用">
-          </el-table-column>
+            label="保险费">
+          </el-table-column><el-table-column
+          prop="transportcost"
+          width="80"
+          label="运费">
+        </el-table-column><el-table-column
+          prop="othercost"
+          width="80"
+          label="其他费用">
+        </el-table-column><el-table-column
+          prop="totalcost"
+          width="80"
+          label="合计费用">
+        </el-table-column>
           <el-table-column
             prop="checkintime"
             width="100"
@@ -144,7 +143,7 @@
           </el-table-column>
           <el-table-column
             prop="remark"
-            width="80"
+            width="160"
             label="备注">
           </el-table-column>
           <el-table-column

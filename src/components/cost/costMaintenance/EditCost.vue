@@ -26,27 +26,27 @@
     </div>
     <el-card shadow="never" body-style="padding:0;padding-top:1px">
       <div>
-        <el-dialog title="修改成本" :visible.sync="outerVisible">
-          <div>
-            <el-tag>油费</el-tag>
+        <el-dialog title="录入成本" :visible.sync="outerVisible">
+          <el-row style="margin-bottom: 5px">
+            <el-tag style="width: 5vw;margin-right: 5px">油费</el-tag>
             <el-input v-model="schedule.oilcost" style="width: 14vw" placeholder="油费"></el-input>
-          </div>
-          <div>
-            <el-tag>过桥费</el-tag>
+          </el-row>
+          <el-row style="margin-bottom: 5px">
+            <el-tag style="width: 5vw;margin-right: 5px">过桥费</el-tag>
             <el-input v-model="schedule.toll" style="width: 14vw" placeholder="过桥费"></el-input>
-          </div>
-          <div>
-            <el-tag>罚款</el-tag>
+          </el-row>
+          <el-row style="margin-bottom: 5px">
+            <el-tag style="width: 5vw;margin-right: 5px">罚款</el-tag>
             <el-input v-model="schedule.fine" style="width: 14vw" placeholder="罚款"></el-input>
-          </div>
-          <div>
-            <el-tag>其他费用</el-tag>
+          </el-row>
+          <el-row style="margin-bottom: 5px">
+            <el-tag style="width: 5vw;margin-right: 5px">其他费用</el-tag>
             <el-input v-model="schedule.othercost" style="width: 14vw" placeholder="其他费用"></el-input>
-          </div>
-          <div>
-            <el-tag>合计成本</el-tag>
+          </el-row>
+          <el-row style="margin-bottom: 5px">
+            <el-tag style="width: 5vw;margin-right: 5px">合计成本</el-tag>
             <el-input v-model="totalcost" style="width: 14vw" placeholder="合计成本"></el-input>
-          </div>
+          </el-row>
           <div slot="footer" class="dialog-footer">
             <el-button @click="outerVisible = false">取 消</el-button>
             <el-button type="primary" @click="addCost">确 定</el-button>
@@ -58,10 +58,6 @@
           :data="schedules"
           border
           style="width: 100%">
-          <el-table-column
-            type="selection"
-            width="35">
-          </el-table-column>
           <el-table-column
             prop="schedulingid"
             label="编号"

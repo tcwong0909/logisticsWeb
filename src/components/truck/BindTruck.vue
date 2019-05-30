@@ -1,47 +1,48 @@
 <template>
-  <div>
+  <div v-loading="loading"  element-loading-text="拼命加载中">
     <div>
       <el-card  body-style="padding:10px" shadow="never" style="display: flex;align-items: center">
-        <el-form>
-          <tr>
+          <el-row>
             <td>
-              <el-input placeholder="请输入内容" suffix-icon="el-icon-search" v-model="searchContact.fkDriverid">
-                <template slot="prepend">驾驶员编号</template>
+              <el-input placeholder="请输入" suffix-icon="el-icon-search" v-model="searchContact.fkDriverid">
+                <template slot="prepend" >驾驶员编号</template>
               </el-input>
             </td>
             <td>
-              <el-input placeholder="请输入内容" suffix-icon="el-icon-search" v-model="searchContact.drivername">
+              <el-input placeholder="请输入" suffix-icon="el-icon-search" v-model="searchContact.drivername">
                 <template slot="prepend">驾驶员姓名</template>
               </el-input>
             </td>
             <td>
-              <el-input placeholder="请输入内容" suffix-icon="el-icon-search" v-model="searchContact.fkTruckid">
+              <el-input placeholder="请输入" suffix-icon="el-icon-search" v-model="searchContact.fkTruckid">
                 <template slot="prepend">车辆编号</template>
               </el-input>
             </td>
             <td>
-              <el-input placeholder="请输入内容" suffix-icon="el-icon-search" v-model="searchContact.teamname">
+              <el-input placeholder="请输入" suffix-icon="el-icon-search" v-model="searchContact.teamname">
                 <template slot="prepend">车队名称</template>
               </el-input>
             </td>
-            <td style="padding-left: 10px">
-              <el-tag>绑定状态</el-tag>
-              <template>
-                <el-select v-model="searchContact.bindId" placeholder="请选择">
-                  <el-option label="全部" :value="''"></el-option>
-                  <el-option label="未绑定" :value="1"></el-option>
-                  <el-option label="已绑定" :value="2"></el-option>
-                </el-select>
-              </template>
-            </td>
+
             <td style="padding-left: 10px">
               <el-button type="danger" icon="el-icon-full-screen" @click="resetSearch">重置</el-button>
             </td>
             <td style="padding-left: 10px">
               <el-button type="primary" icon="el-icon-search" @click="doSearch">搜索</el-button>
             </td>
-          </tr>
-        </el-form>
+          </el-row>
+        <el-row style="display: flex;justify-content: flex-end">
+          <td style="padding-left: 10px">
+            <template>
+              <el-select v-model="searchContact.bindId" placeholder="请选择" style="width: 10vw">
+                <el-option label="全部" :value="''"></el-option>
+                <el-option label="未绑定" :value="1"></el-option>
+                <el-option label="已绑定" :value="2"></el-option>
+              </el-select>
+            </template>
+            <el-button type="primary" style="width: 6vw">绑定状态</el-button>
+          </td>
+        </el-row>
       </el-card>
     </div>
     <el-card shadow="never" body-style="padding:0;padding-top:1px">
@@ -172,6 +173,7 @@
     name: "BindTruck",
     data(){
       return{
+        loading:true,
         multipleSelection: [],
         ids:"",
         total:null,
@@ -295,7 +297,7 @@
           "&fkDriverid="+this.searchContact.fkDriverid+"&drivername="+this.searchContact.drivername+
           "&teamname="+this.searchContact.teamname+"&bindId="+this.searchContact.bindId).then(res=>{
           if (res){
-            console.log(res.data.data);
+            this.loading=false;
             this.contacts=res.data.data;
             this.total = res.data.total;
           }

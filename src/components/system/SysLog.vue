@@ -96,7 +96,7 @@
           </el-table-column>
           <el-table-column
             prop="exception"
-            width="110"
+            width="800"
             label="异常信息">
           </el-table-column>
         </el-table>
