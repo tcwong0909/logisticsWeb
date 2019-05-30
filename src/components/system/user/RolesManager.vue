@@ -1,5 +1,5 @@
 <template>
-  <div >
+  <div v-loading="loading" element-loading-text="拼命加载中">
     <div  >
       <el-button type="primary" icon="el-icon-plus" size="small" @click="showDialog('add')">添加角色</el-button>
     </div>
@@ -7,14 +7,14 @@
       <div>
         <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible">
           <el-form :model="role">
-            <tr>
+            <el-row style="margin-bottom: 15px">
               <el-tag>角色名称</el-tag>
               <el-input v-model="role.rolename" style="width: 10vw"></el-input>
-            </tr>
-            <tr>
+            </el-row>
+            <el-row>
               <el-tag>角色权限</el-tag>
               <el-input v-model="role.rolepurview" style="width: 10vw"></el-input>
-            </tr>
+            </el-row>
           </el-form>
           <div slot="footer" class="dialog-footer">
             <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -61,6 +61,7 @@
     name: "RolesManager",
     data(){
       return{
+        loading:true,
         dialogFormVisible:false,
         dialogTitle:'',
         role:{
@@ -104,17 +105,33 @@
       loadRoles(){
         this.getRequest("/role/getAll").then(res=>{
           if (res){
+            this.loading=false;
             this.roles=res.data;
           }
         })
       },
       deleteById(id){
-        this.deleteRequest("/role/delete/"+id).then(res=>{
-            if (res){
-              this.loadRoles()
+        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.deleteRequest("/role/delete/"+id).then(res=>{
+              if (res){
+                this.loadRoles()
+              }
             }
-          }
-        )
+          );
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
       },
       showDialog(data){
         this.dialogFormVisible=true;

@@ -1,5 +1,5 @@
 <template>
-  <div >
+  <div v-loading="loading" element-loading-text="拼命加载中">
       <div style="margin-top: 5px;">
         <el-table
           :data="logDics"
@@ -27,6 +27,7 @@
     name: "LogDic",
     data(){
       return{
+        loading:true,
         logDics:[]
       }
     },
@@ -39,6 +40,7 @@
       loadLogDics(){
         this.getRequest("/logDic/getAll").then(res=>{
           if (res){
+            this.loading=false;
             this.logDics=res.data;
           }
         })

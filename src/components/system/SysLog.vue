@@ -1,5 +1,5 @@
 <template>
-  <div >
+  <div v-loading="loading" element-loading-text="拼命加载中"  >
     <div>
       <el-card  body-style="padding:10px" shadow="never" style="display: flex;align-items: center">
         <el-form>
@@ -123,6 +123,7 @@
     name: "SysLog",
     data(){
       return{
+        loading:true,
         total:null,
         pageSize:10,
         currentPage:1,
@@ -160,6 +161,7 @@
         this.postRequest("/syslog/getAllByPage?page="+this.currentPage+"&size="+this.pageSize+"&behavior="+this.searchSyslog.behavior+
           "&fkTypeid="+this.searchSyslog.fkTypeid+"&fkUserid="+this.searchSyslog.fkUserid+"&isexception="+this.searchSyslog.isexception).then(res=>{
           if (res){
+            this.loading=false;
             this.syslogs=res.data.data;
             this.total = res.data.total;
           }

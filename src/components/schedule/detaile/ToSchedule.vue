@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-loading="loading" element-loading-text="拼命加载中" >
     <div>
       <el-card body-style="padding:10px" shadow="never" style="display: flex;align-items: center">
         <el-form>
@@ -51,39 +51,45 @@
           </el-table-column>
           <el-table-column
             label="发货信息"
-            width="110">
+            width="140">
             <template slot-scope="scope">
               <el-popover
                 placement="top-start"
                 title="发货信息"
-                width="200"
-
+                width="300"
                 trigger="hover">
                 <div>
-                  {{scope.row.sendaddress}}
-                  {{scope.row.sendlinkman}}
-                  {{scope.row.sendphone}}
+                  发货地址：{{scope.row.sendaddress}}
                 </div>
-                <el-tag slot="reference"> {{scope.row.sendcompany}}</el-tag>
-
+                <div>
+                  发货联系人：{{scope.row.sendlinkman}}
+                </div>
+                <div>
+                  发货人联系电话：{{scope.row.sendphone}}
+                </div>
+                <el-link type="primary" slot="reference">{{scope.row.sendcompany}}</el-link>
               </el-popover>
             </template>
           </el-table-column>
           <el-table-column
-            width="100"
+            width="140"
             label="收货信息">
             <template slot-scope="scope">
               <el-popover
                 placement="top-start"
                 title="收货信息"
-                width="200"
+                width="300"
                 trigger="hover">
                 <div>
-                  {{scope.row.fkReceiveaddress}}
-                  {{scope.row.receivelinkman}}
-                  {{scope.row.receivephone}}
+                  收货地址：{{scope.row.fkReceiveaddress}}
                 </div>
-                <el-tag slot="reference">{{scope.row.receivecompany}}</el-tag>
+                <div>
+                  收货联系人：{{scope.row.receivelinkman}}
+                </div>
+                <div>
+                  收货人联系电话：{{scope.row.receivephone}}
+                </div>
+                <el-link type="primary" slot="reference">{{scope.row.receivecompany}}</el-link>
               </el-popover>
             </template>
           </el-table-column>
@@ -110,7 +116,7 @@
           </el-table-column>
           <el-table-column
             prop="remark"
-            width="80"
+            width="100"
             label="费用信息">
             <template slot-scope="scope">
               <el-popover
@@ -118,12 +124,16 @@
                 title="费用信息"
                 width="200"
                 trigger="hover">
-                <slot>
-                  {{scope.row.insurancecost}}
-                  {{scope.row.transportcost}}
-                  {{scope.row.othercost}}
-                </slot>
-                <el-tag slot="reference">费用详情</el-tag>
+                <div>
+                  保险费:{{scope.row.insurancecost}}
+                </div>
+                <div>
+                  运费:{{scope.row.transportcost}}
+                </div>
+                <div>
+                  其他费用:{{scope.row.othercost}}
+                </div>
+                <el-link type="primary" slot="reference">费用详情</el-link>
               </el-popover>
             </template>
           </el-table-column>
@@ -162,20 +172,20 @@
       </div>
       <div>
         <el-dialog title="承运调度" :visible.sync="outerVisible">
-          <div>
-            <el-tag>出发时间</el-tag>
+          <div style="margin-bottom: 8px">
+            <el-tag style="width: 5vw">出发时间</el-tag>
             <el-date-picker
               v-model="schedule.starttime"
               type="datetime"
               placeholder="出发时间">
             </el-date-picker>
           </div>
-          <div>
-            <el-tag>车辆编号</el-tag>
+          <div style="margin-bottom: 8px">
+            <el-tag style="width: 5vw">车辆编号</el-tag>
             <el-input v-model="schedule.fkTruckid" style="width: 14vw" placeholder="车辆编号" @focus="selectTruck"></el-input>
           </div>
-          <div>
-            <el-tag>备注</el-tag>
+          <div style="margin-bottom: 8px">
+            <el-tag style="width: 5vw">备注</el-tag>
             <el-input v-model="schedule.remark" style="width: 14vw" placeholder="备注"></el-input>
           </div>
           <el-dialog
@@ -268,6 +278,7 @@
     name: "ToSchedule",
     data() {
       return {
+        loading:true,
         outerVisible:false,
         innerVisible:false,
         finishedstates: [
@@ -331,6 +342,7 @@
         this.postRequest("/carriers/getAll?page=" + this.currentPage + "&size=" + this.pageSize +
           "&sendcompany=" + this.searchCarrierss.sendcompany + "&receivecompany=" + this.searchCarrierss.receivecompany + "&finishedstate=" + this.searchCarrierss.finishedstate).then(res => {
           if (res) {
+            this.loading=false;
             this.Carrierss = res.data.data;
             this.total = res.data.total;
           }

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-loading="loading" element-loading-text="拼命加载中">
     <div>
       <el-card body-style="padding:10px" shadow="never" style="display: flex;align-items: center">
         <el-form>
@@ -174,6 +174,7 @@
     name: "QueryCost",
     data() {
       return {
+        loading:true,
         finishedstates: [
           {"id": 0, "name": "待调度"},
           {"id": 1, "name": "已调度"},
@@ -215,6 +216,7 @@
         this.postRequest("/carriers/getAll?page=" + this.currentPage + "&size=" + this.pageSize +
           "&sendcompany=" + this.searchCarrierss.sendcompany + "&receivecompany=" + this.searchCarrierss.receivecompany + "&finishedstate=" + this.searchCarrierss.finishedstate).then(res => {
           if (res) {
+            this.loading=false;
             this.Carrierss = res.data.data;
             this.total = res.data.total;
           }

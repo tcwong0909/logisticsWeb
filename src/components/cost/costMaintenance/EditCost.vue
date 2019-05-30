@@ -1,5 +1,5 @@
 <template>
-  <div >
+  <div v-loading="loading" element-loading-text="拼命加载中" >
     <div>
       <el-card  body-style="padding:10px" shadow="never" style="display: flex;align-items: center">
         <el-form>
@@ -153,6 +153,7 @@
     name: "EditCost",
     data(){
       return{
+        loading:true,
         outerVisible:false,
         total:null,
         pageSize:10,
@@ -203,7 +204,7 @@
         this.postRequest("/cost/getAllByPage?page="+this.currentPage+"&size="+this.pageSize+
           "&schedulingid="+this.searchSchedule.schedulingid+"&fkCarriersid="+this.searchSchedule.fkCarriersid).then(res=>{
           if (res){
-            console.log(res.data.data);
+            this.loading=false;
             this.schedules=res.data.data;
             this.total = res.data.total;
           }

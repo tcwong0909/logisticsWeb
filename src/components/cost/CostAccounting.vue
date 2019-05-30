@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <div>
-    <el-button @click="handleExport">导出</el-button>
+  <div  v-loading="loading" element-loading-text="拼命加载中">
+    <div style="margin-bottom: 10px;margin-top: 10px">
+    <el-button @click="handleExport" type="primary">导出</el-button>
     </div>
 
     <div>
@@ -12,7 +12,7 @@
         <el-table-column
           prop="carriers.carriersid"
           label="承运单编号"
-          width="50">
+          width="100">
         </el-table-column>
         <el-table-column
           prop="carriers.insurancecost"
@@ -62,7 +62,8 @@
         <el-table-column
           width="100"
           label="总合计成本">
-          {{Totalcost}}
+         <!-- {{Totalcost}}-->
+          <!--{{totalcost}}-{{carriers.totalcost}}-->
         </el-table-column>
         <el-table-column
           prop="carriers.checkintime"
@@ -83,9 +84,10 @@
     name: 'Test',
     data() {
       return {
-        //schedules:[{a:''}],
+        loading:true,
+        schedules:[],
 
-        schedulesData:[],
+        //schedulesData:[],
         // 表格
         tableData: [{
           date: '2016-05-02',
@@ -118,6 +120,7 @@
       this.postRequest("/schedule/getAllByPage").then(res=>{
 
         if (res) {
+          this.loading=false;
           this.schedules = res.data.data;
           // this.schedulesData.a=this.schedules.carriers.carriersid;
           // this.schedulesData.b=this.schedules.carriers.insurancecost;
@@ -144,7 +147,7 @@
     methods: {
       // 导出
       handleExport() {
-        console.log(this.schedulesData);
+        //console.log(this.schedulesData);
         if (this.schedules.length) {
           const params = {
             title: ['承运单编号', '保险费', '运费','其他费用','合计运费','油费','过桥费','罚款','其他费用','合计成本','订单时间'],

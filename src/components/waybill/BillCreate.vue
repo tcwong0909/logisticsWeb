@@ -1,5 +1,5 @@
 <template>
-  <div >
+  <div v-loading="loading" element-loading-text="拼命加载中">
     <div>
       <el-card  body-style="padding:10px" shadow="never" style="display: flex;align-items: center">
         <el-form>
@@ -49,91 +49,128 @@
             <el-step title="填写承运单"></el-step>
             <el-step title="填写货物单"></el-step>
           </el-steps>
-          <div v-show="active ===0" style="padding-top: 5vh">
+          <div v-show="active ===0" style="padding-top: 2vh">
             <el-form :model="carriers">
-              <tr>
-                <el-tag>发货单位</el-tag>
-                <el-input v-model="carriers.sendcompany" style="width: 10vw"></el-input>
-                <el-tag >发货单位地址</el-tag>
+              <el-row style="margin-bottom: 5px">
+                <el-col :span="12">
+                  <el-tag style="width: 7vw">发货单位</el-tag>
+                  <el-input v-model="carriers.sendcompany" style="width: 10vw"></el-input>
+                </el-col>
+                <el-col :span="12">
+                <el-tag style="width: 9vw">发货单位地址</el-tag>
                 <el-input v-model="carriers.sendaddress" style="width: 10vw"></el-input>
-              </tr>
-              <tr>
-                <el-tag>发货人</el-tag>
+                </el-col>
+              </el-row>
+              <el-row style="margin-bottom: 5px">
+                <el-col :span="12">
+                <el-tag style="width: 7vw">发货人</el-tag>
                 <el-input v-model="carriers.sendlinkman" style="width: 10vw"></el-input>
-                <el-tag >发货人电话</el-tag>
+                </el-col>
+                <el-col :span="12">
+                <el-tag style="width: 9vw">发货人电话</el-tag>
                 <el-input v-model="carriers.sendphone" style="width: 10vw"></el-input>
-              </tr>
-              <tr>
-                <el-tag>收货单位</el-tag>
+                </el-col>
+              </el-row>
+              <el-row style="margin-bottom: 5px">
+                <el-col :span="12">
+                <el-tag style="width: 7vw">收货单位</el-tag>
                 <el-input v-model="carriers.receivecompany" style="width: 10vw"></el-input>
-                <el-tag >收货单位地址</el-tag>
+                </el-col>
+                <el-col :span="12">
+                <el-tag style="width: 9vw">收货单位地址</el-tag>
                 <el-input v-model="carriers.fkReceiveaddress" style="width: 10vw"></el-input>
-              </tr>
-              <tr>
-                <el-tag>收货人/联系人</el-tag>
+                </el-col>
+              </el-row>
+              <el-row style="margin-bottom: 5px">
+                <el-col :span="12">
+                <el-tag style="width: 7vw">收货人/联系人</el-tag>
                 <el-input v-model="carriers.receivelinkman" style="width: 10vw"></el-input>
-                <el-tag >收货人电话/联系人电话</el-tag>
+                </el-col>
+                <el-col :span="12">
+                <el-tag style="width: 9vw">收货人电话/联系人电话</el-tag>
                 <el-input v-model="carriers.receivephone" style="width: 10vw"></el-input>
-              </tr>
-              <tr>
-                <el-tag style="margin-left: 28px">承运日期</el-tag>
+                </el-col>
+              </el-row>
+              <el-row style="margin-bottom: 5px">
+                <el-col :span="12">
+                <el-tag style="width: 7vw">承运日期</el-tag>
                 <el-date-picker
+                  style="width: 10vw;"
                   v-model="carriers.leaverdate"
                   type="date"
-                  placeholder="选择日期">
+                  placeholder="请选择承运日期">
                 </el-date-picker>
-                <el-tag style="margin-left: 28px">收货时间</el-tag>
+                </el-col>
+                <el-col :span="12">
+                <el-tag style="width: 9vw">收货时间</el-tag>
                 <el-date-picker
                   v-model="carriers.receivedate"
                   type="date"
-                  placeholder="选择日期">
+                  style="width: 10vw;"
+                  placeholder="请选择收货日期">
                 </el-date-picker>
-              </tr>
-              <tr>
-                <el-tag>完成情况</el-tag>
+                </el-col>
+              </el-row>
+              <el-row style="margin-bottom: 5px">
+                <el-col :span="24">
+                <el-tag style="width: 7vw">完成情况</el-tag>
                 <el-radio v-model="carriers.finishedstate" :label= 0>待调度</el-radio>
                 <el-radio v-model="carriers.finishedstate" :label= 1>已调度</el-radio>
                 <el-radio v-model="carriers.finishedstate" :label= 2>已签收</el-radio>
                 <el-radio v-model="carriers.finishedstate" :label= 3>已结算</el-radio>
-              </tr>
-              <tr>
-                <el-tag>保险费</el-tag>
+                </el-col>
+              </el-row>
+              <el-row style="margin-bottom: 5px">
+                <el-col :span="12">
+                <el-tag style="width: 7vw">保险费</el-tag>
                 <el-input v-model="carriers.insurancecost" style="width: 10vw"></el-input>
-                <el-tag >运费</el-tag>
+                </el-col>
+                <el-col :span="12">
+                <el-tag style="width: 9vw">运费</el-tag>
                 <el-input v-model="carriers.transportcost" style="width: 10vw"></el-input>
-                <el-tag >其他费用</el-tag>
-                <el-input v-model="carriers.othercost" style="width: 10vw"></el-input>
-              </tr>
-              <tr>
-                <el-tag>合计费用</el-tag>
+                </el-col>
+              </el-row>
+              <el-row style="margin-bottom: 5px">
+                <el-col :span="12">
+                  <el-tag style="width: 7vw">其他费用</el-tag>
+                  <el-input v-model="carriers.othercost" style="width: 10vw"></el-input>
+                </el-col>
+                <el-col :span="12">
+                <el-tag style="width: 9vw">合计费用</el-tag>
                 <el-input v-model="totalcost" style="width: 10vw"></el-input>
-                <el-tag >备注</el-tag>
+                </el-col>
+              </el-row>
+              <el-row style="margin-bottom: 5px">
+                <el-col :span="12">
+                <el-tag style="width: 7vw">备注</el-tag>
                 <el-input v-model="carriers.remark" style="width: 10vw"></el-input>
-              </tr>
+                </el-col>
+              </el-row>
+
             </el-form>
             <div slot="footer" class="dialog-footer" style="display: flex;justify-content: flex-end">
               <el-button @click="dialogFormVisible = false" style="margin-top: 12px;" >取 消</el-button>
               <el-button style="margin-top: 12px;" @click="next">下一步</el-button>
             </div>
           </div>
-          <div v-show="active ===1">
+          <div v-show="active ===1" style="padding-top: 2vh">
             <el-form :model="carriers.goods">
-              <tr>
+              <el-row style="margin-bottom: 5px">
                 <el-tag>货物名称</el-tag>
                 <el-input v-model="carriers.goods.goodsname" style="width: 10vw"></el-input>
-                </tr>
-              <tr>
+                </el-row>
+              <el-row style="margin-bottom: 5px">
                 <el-tag >货物数量</el-tag>
                 <el-input v-model="carriers.goods.amount" style="width: 10vw"></el-input>
-              </tr>
-              <tr>
+              </el-row>
+              <el-row style="margin-bottom: 5px">
                 <el-tag>货物重量</el-tag>
                 <el-input v-model="carriers.goods.weight" style="width: 10vw"></el-input>
-              </tr>
-              <tr>
+              </el-row>
+              <el-row style="margin-bottom: 5px">
                 <el-tag >货物体积</el-tag>
                 <el-input v-model="carriers.goods.volume" style="width: 10vw"></el-input>
-              </tr>
+              </el-row>
 
             </el-form>
 
@@ -169,34 +206,40 @@
               <el-popover
                 placement="top-start"
                 title="发货信息"
-                width="200"
-
+                width="300"
                 trigger="hover">
-              <div>
-                {{scope.row.sendaddress}}
-                {{scope.row.sendlinkman}}
-                {{scope.row.sendphone}}
-              </div>
-                <el-tag slot="reference"> {{scope.row.sendcompany}}</el-tag>
-
+                <div>
+                  发货地址：{{scope.row.sendaddress}}
+                </div>
+                <div>
+                  发货联系人：{{scope.row.sendlinkman}}
+                </div>
+                <div>
+                  发货人联系电话：{{scope.row.sendphone}}
+                </div>
+                <el-link type="primary" slot="reference">{{scope.row.sendcompany}}</el-link>
               </el-popover>
             </template>
           </el-table-column>
           <el-table-column
-            width="100"
+            width="110"
             label="收货信息">
             <template slot-scope="scope">
               <el-popover
                 placement="top-start"
                 title="收货信息"
-                width="200"
+                width="300"
                 trigger="hover">
                 <div>
-                  {{scope.row.fkReceiveaddress}}
-                  {{scope.row.receivelinkman}}
-                  {{scope.row.receivephone}}
+                  收货地址：{{scope.row.fkReceiveaddress}}
                 </div>
-                <el-tag slot="reference">{{scope.row.receivecompany}}</el-tag>
+                <div>
+                  收货联系人：{{scope.row.receivelinkman}}
+                </div>
+                <div>
+                  收货人联系电话：{{scope.row.receivephone}}
+                </div>
+                <el-link type="primary" slot="reference">{{scope.row.receivecompany}}</el-link>
               </el-popover>
             </template>
           </el-table-column>
@@ -223,7 +266,7 @@
           </el-table-column>
           <el-table-column
             prop="remark"
-            width="80"
+            width="100"
             label="费用信息">
             <template slot-scope="scope">
               <el-popover
@@ -231,12 +274,16 @@
                 title="费用信息"
                 width="200"
                 trigger="hover">
-                <slot>
-                 {{scope.row.insurancecost}}
-                 {{scope.row.transportcost}}
-                 {{scope.row.othercost}}
-                </slot>
-                <el-tag slot="reference">费用详情</el-tag>
+                <div>
+                  保险费:{{scope.row.insurancecost}}
+                </div>
+                <div>
+                  运费:{{scope.row.transportcost}}
+                </div>
+                <div>
+                  其他费用:{{scope.row.othercost}}
+                </div>
+                <el-link type="primary" slot="reference">费用详情</el-link>
               </el-popover>
             </template>
           </el-table-column>
@@ -296,6 +343,7 @@
     name: "Carriers",
     data(){
       return{
+        loading:true,
         active: 0,
         finishedstates:[
           {"id":0,"name":"待调度"},
@@ -432,6 +480,7 @@
         this.postRequest("/carriers/getAll?page="+this.currentPage+"&size="+this.pageSize+
           "&sendcompany="+this.searchCarrierss.sendcompany+"&receivecompany="+this.searchCarrierss.receivecompany+"&finishedstate="+this.searchCarrierss.finishedstate).then(res=>{
           if (res){
+            this.loading=false;
             this.Carrierss=res.data.data;
             this.total = res.data.total;
           }

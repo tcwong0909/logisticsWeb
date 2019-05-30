@@ -1,5 +1,5 @@
 <template>
-  <div >
+  <div v-loading="loading" element-loading-text="拼命加载中">
     <div>
       <el-card  body-style="padding:10px" shadow="never" style="display: flex;align-items: center">
         <el-form>
@@ -59,25 +59,35 @@
       <div>
         <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible">
           <el-form :model="user">
-            <tr>
-              <el-tag>用户姓名</el-tag>
-              <el-input v-model="user.username" style="width: 10vw"></el-input>
-              <el-tag style="margin-left: 28px">性别</el-tag>
+            <el-row style="margin-bottom: 5px">
+              <el-col :span="12">
+                <el-tag style="width: 5vw">用户姓名</el-tag>
+                <el-input v-model="user.username" style="width: 10vw"></el-input>
+              </el-col>
+              <el-col :span="12">
+              <el-tag style="width: 5vw">性别</el-tag>
               <el-select v-model="user.sex" style="width: 10vw">
                 <el-option label="男" value="1"></el-option>
                 <el-option label="女" value="2"></el-option>
               </el-select>
-            </tr>
-            <tr>
-              <el-tag style="margin-left: 28px;width: 5vw">用户账号</el-tag>
-              <el-input v-model="user.account" style="width: 10vw" placeholder="吨"></el-input>
-              <el-tag style="margin-left: 28px;width: 5vw">联系电话</el-tag>
-              <el-input v-model="user.phone" style="width: 10vw" placeholder="吨"></el-input>
-            </tr>
-            <tr>
-              <el-tag style="margin-left: 28px;width: 5vw">邮箱</el-tag>
-              <el-input v-model="user.email" style="width: 10vw" placeholder="吨"></el-input>
-            </tr>
+              </el-col>
+            </el-row>
+            <el-row style="margin-bottom: 5px">
+              <el-col :span="12">
+              <el-tag style="width: 5vw">用户账号</el-tag>
+              <el-input v-model="user.account" style="width: 10vw" ></el-input>
+              </el-col>
+              <el-col :span="12">
+              <el-tag style="width: 5vw">联系电话</el-tag>
+              <el-input v-model="user.phone" style="width: 10vw" ></el-input>
+              </el-col>
+            </el-row>
+            <el-row style="margin-bottom: 5px">
+              <el-col :span="12">
+              <el-tag style="width: 5vw">邮箱</el-tag>
+              <el-input v-model="user.email" style="width: 10vw" ></el-input>
+              </el-col>
+            </el-row>
           </el-form>
           <div slot="footer" class="dialog-footer">
             <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -86,16 +96,16 @@
         </el-dialog>
       </div>
       <div>
-        <el-dialog :title="bindDialog" :visible.sync="bindDialog">
+        <el-dialog title="绑定角色" :visible.sync="bindDialog">
           <el-form :model="user">
-            <tr>
-              <el-tag style="margin-left: 28px;width: 5vw">用户账号</el-tag>
+            <el-row style="margin-bottom: 10px">
+              <el-tag style="width: 6vw">用户账号</el-tag>
               <el-input  disabled="true" v-model="user.account" style="width: 10vw" placeholder="吨"></el-input>
-            </tr>
-            <tr>
-              <el-tag>要绑定角色</el-tag>
+            </el-row>
+            <el-row style="margin-bottom: 6px">
+              <el-tag style="width: 6vw">要绑定角色</el-tag>
               <template >
-                <el-select v-model="user.fkRoleid" placeholder="请选择">
+                <el-select v-model="user.fkRoleid" placeholder="请选择" style="width: 10vw">
                   <el-option
                     v-for="role in roles"
                     :key="role.roleid"
@@ -104,7 +114,7 @@
                   </el-option>
                 </el-select>
               </template>
-            </tr>
+            </el-row>
           </el-form>
           <div slot="footer" class="dialog-footer">
             <el-button @click="bindDialog = false">取 消</el-button>
@@ -130,10 +140,10 @@
           <el-table-column
             prop="username"
             label="用户姓名"
-            width="110">
+            width="80">
           </el-table-column>
           <el-table-column
-            width="80"
+            width="60"
             label="性别">
             <template slot-scope="scope">
               <el-tag v-if="scope.row.sex===1" type="success">男</el-tag>
@@ -143,23 +153,23 @@
           </el-table-column>
           <el-table-column
             prop="account"
-            width="100"
+            width="80"
             label="用户账号">
           </el-table-column>
           <el-table-column
             prop="phone"
-            width="80"
+            width="120"
             label="联系电话">
           </el-table-column>
           <el-table-column
             prop="email"
-            width="100"
+            width="200"
             label="邮箱">
           </el-table-column>
           <el-table-column
             prop="role.rolename"
             label="角色"
-            width="50">
+            width="120">
           </el-table-column>
           <el-table-column
             prop="checkintime"
@@ -203,6 +213,7 @@
     name: "UserManager",
     data(){
       return{
+        loading:true,
         multipleSelection: [],
         ids:"",
         total:null,
@@ -301,6 +312,7 @@
         this.postRequest("/user/getAllByPage?page="+this.currentPage+"&size="+this.pageSize+
           "&account="+this.searchUser.account+"&username="+this.searchUser.username+"&sex="+this.searchUser.sex+"&fkRoleid="+this.searchUser.fkRoleid).then(res=>{
           if (res){
+            this.loading=false;
             this.users=res.data.data;
             this.total = res.data.total;
           }
@@ -344,12 +356,27 @@
       },
 
       deleteByIds(data){
-        this.deleteRequest("/user/delete/"+data).then(res=>{
-            if (res){
-              this.loadUsers();
+        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.deleteRequest("/user/delete/"+data).then(res=>{
+              if (res){
+                this.loadUsers();
+              }
             }
-          }
-        )
+          );
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
       },
       showDialog(data){
         this.dialogFormVisible=true;
