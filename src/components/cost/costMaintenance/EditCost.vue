@@ -69,9 +69,35 @@
             width="100">
           </el-table-column>
           <el-table-column
-            prop="fkCarriersid"
-            width="95"
+            width="140"
             label="承运单编号">
+            <template slot-scope="scope">
+              <el-popover
+                placement="top-start"
+                title="承运单"
+                width="300"
+                trigger="hover">
+                <div>
+                  收货地址：{{scope.row.carriers.sendcompany}}
+                </div>
+                <div>
+                  收货联系人：{{scope.row.carriers.sendlinkman}}
+                </div>
+                <div>
+                  收货人联系电话：{{scope.row.carriers.carriers}}
+                </div>
+                <div>
+                  收货地址：{{scope.row.carriers.fkReceiveaddress}}
+                </div>
+                <div>
+                  收货联系人：{{scope.row.carriers.receivelinkman}}
+                </div>
+                <div>
+                  收货人联系电话：{{scope.row.carriers.receivephone}}
+                </div>
+                <el-link type="primary" slot="reference">{{scope.row.fkCarriersid}}</el-link>
+              </el-popover>
+            </template>
           </el-table-column>
           <el-table-column
             prop="fkTruckid"

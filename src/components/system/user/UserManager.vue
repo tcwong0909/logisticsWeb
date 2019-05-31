@@ -306,7 +306,11 @@
         })
       },
       selectSearchChanges(){
-
+        this.getRequest("/role/getAll").then(res=>{
+          if (res){
+            this.roles=res.data;
+          }
+        })
       },
       loadUsers(){
         this.postRequest("/user/getAllByPage?page="+this.currentPage+"&size="+this.pageSize+

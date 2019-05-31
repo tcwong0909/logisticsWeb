@@ -81,11 +81,6 @@
             width="80">
           </el-table-column>
           <el-table-column
-            prop="parameters"
-            label="参数"
-            width="430">
-          </el-table-column>
-          <el-table-column
             width="80"
             label="是否异常">
             <template slot-scope="scope">
@@ -93,6 +88,11 @@
               <el-tag v-else-if="scope.row.isexception===2" >异常</el-tag>
               <el-tag v-else type="warning">未知</el-tag>
             </template>
+          </el-table-column>
+          <el-table-column
+            prop="parameters"
+            label="参数"
+            width="600">
           </el-table-column>
           <el-table-column
             prop="exception"

@@ -15,20 +15,6 @@
               </el-input>
             </td>
             <td style="padding-left: 10px">
-              <el-tag>完成情况</el-tag>
-              <template>
-                <el-select v-model="searchCarrierss.finishedstate" placeholder="请选择">
-                  <el-option label="全部" :value="''"></el-option>
-                  <el-option
-                    v-for="item in finishedstates"
-                    :key="item.name"
-                    :label="item.name"
-                    :value="item.id">
-                  </el-option>
-                </el-select>
-              </template>
-            </td>
-            <td style="padding-left: 10px">
               <el-button type="danger" icon="el-icon-full-screen" @click="resetSearch">重置</el-button>
             </td>
             <td style="padding-left: 10px">
@@ -107,11 +93,11 @@
             label="完成情况"
             width="80">
             <template slot-scope="scope">
-              <el-tag v-if="scope.row.finishedstate ===0">待调度</el-tag>
-              <el-tag v-else-if="scope.row.finishedstate ===1">已调度</el-tag>
-              <el-tag v-else-if="scope.row.finishedstate ===2">已签收</el-tag>
-              <el-tag v-else-if="scope.row.finishedstate ===3">已结算</el-tag>
-              <el-tag v-else="scope.row.finishedstate ===0">未知</el-tag>
+              <el-tag v-if="scope.row.finishedstate ===1">待调度</el-tag>
+              <el-tag v-else-if="scope.row.finishedstate ===2">已调度</el-tag>
+              <el-tag v-else-if="scope.row.finishedstate ===3">已签收</el-tag>
+              <el-tag v-else-if="scope.row.finishedstate ===4">已结算</el-tag>
+              <el-tag v-else>未知</el-tag>
             </template>
           </el-table-column>
           <el-table-column
@@ -192,19 +178,12 @@
     data() {
       return {
         loading:true,
-        finishedstates: [
-          {"id": 0, "name": "待调度"},
-          {"id": 1, "name": "已调度"},
-          {"id": 2, "name": "已签收"},
-          {"id": 3, "name": "已结算"},
-        ],
         total: null,
         pageSize: 10,
         currentPage: 1,
         searchCarrierss: {
           sendcompany: '',
           receivecompany: '',
-          finishedstate: ''
         },
         Carrierss: [],
       }
@@ -226,12 +205,12 @@
         this.searchCarrierss = {
           sendcompany: '',
           receivecompany: '',
-          finishedstate: ''
         }
       },
       loadCarrierss() {
         this.postRequest("/carriers/getAll?page=" + this.currentPage + "&size=" + this.pageSize +
-          "&sendcompany=" + this.searchCarrierss.sendcompany + "&receivecompany=" + this.searchCarrierss.receivecompany + "&finishedstate=" + this.searchCarrierss.finishedstate).then(res => {
+          "&sendcompany=" + this.searchCarrierss.sendcompany + "&receivecompany=" + this.searchCarrierss.receivecompany +
+          "&finishedstate=" + 2).then(res => {
           if (res) {
             this.loading=false;
             this.Carrierss = res.data.data;
@@ -243,7 +222,7 @@
         let page = 1;
         let size = 10;
         this.postRequest("/carriers/getAll?page=" + page + "&size=" + size +
-          "&sendcompany=" + this.searchCarrierss.sendcompany + "&receivecompany=" + this.searchCarrierss.receivecompany + "&finishedstate=" + this.searchCarrierss.finishedstate).then(res => {
+          "&sendcompany=" + this.searchCarrierss.sendcompany + "&receivecompany=" + this.searchCarrierss.receivecompany + "&finishedstate=" + 2).then(res => {
           if (res) {
             this.Carrierss = res.data.data;
             this.total = res.data.total;

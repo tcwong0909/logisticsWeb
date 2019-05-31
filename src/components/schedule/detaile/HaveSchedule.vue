@@ -37,7 +37,7 @@
     </div>
     <el-card shadow="never" body-style="padding:0;padding-top:1px">
       <div>
-        <el-button type="danger" icon="el-icon-minus" size="small" @click="multiDelete" :disabled="scheduleList.length===0">批量删除</el-button>
+        <el-button type="danger" icon="el-icon-minus" size="small" @click="multiDelete" :disabled="scheduleList.length===0">批量退回</el-button>
       </div>
       <div>
         <el-dialog title="承运调度" :visible.sync="outerVisible">
@@ -224,7 +224,7 @@
             label="操作">
             <template slot-scope="scope">
               <el-button type="primary" size="mini" @click="showDialog(scope.row)">编辑</el-button>
-              <el-button type="danger" size="mini" @click="deleteOne(scope.row)">删除</el-button>
+              <el-button type="danger" size="mini" @click="deleteOne(scope.row)">退回</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -353,7 +353,7 @@
       },
 
       deleteMore(data){
-        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        this.$confirm('将退回该调度单?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'

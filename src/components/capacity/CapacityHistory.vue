@@ -107,11 +107,11 @@
             label="完成情况"
             width="80">
             <template slot-scope="scope">
-              <el-tag v-if="scope.row.finishedstate ===0">待调度</el-tag>
-              <el-tag v-else-if="scope.row.finishedstate ===1">已调度</el-tag>
-              <el-tag v-else-if="scope.row.finishedstate ===2">已签收</el-tag>
-              <el-tag v-else-if="scope.row.finishedstate ===3">已结算</el-tag>
-              <el-tag v-else="scope.row.finishedstate ===0">未知</el-tag>
+              <el-tag v-if="scope.row.finishedstate ===1">待调度</el-tag>
+              <el-tag v-else-if="scope.row.finishedstate ===2">已调度</el-tag>
+              <el-tag v-else-if="scope.row.finishedstate ===3">已签收</el-tag>
+              <el-tag v-else-if="scope.row.finishedstate ===4">已结算</el-tag>
+              <el-tag v-else>未知</el-tag>
             </template>
           </el-table-column>
           <el-table-column
