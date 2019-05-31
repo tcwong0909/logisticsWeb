@@ -1,6 +1,6 @@
 # 物流管理系统前端
 
-详细功能介绍 请点击后端代码仓库前端代码地址[https://github.com/tcwong0909/logistics](https://github.com/tcwong0909/logistics)
+详细功能介绍 请点击后端代码仓库地址[https://github.com/tcwong0909/logistics](https://github.com/tcwong0909/logistics)
 
 ## 项目运行配置
 
