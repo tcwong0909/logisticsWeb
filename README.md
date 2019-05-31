@@ -1,6 +1,12 @@
-# ytwl
+# 物流管理系统前端
 
-> A Vue.js project
+详细功能介绍 请点击后端代码仓库前端代码地址[https://gitee.com/tcwong/logistics](https://gitee.com/tcwong/logistics)
+
+## 项目运行配置
+
+具体配置 config 文件下 index.js
+
+运行命令看 Build Setup
 
 ## Build Setup
 
